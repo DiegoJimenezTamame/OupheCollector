@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_collection"
+            android:icon="@drawable/ic_menu_collection"
+            android:title="@string/menu_collection" />
+        <item
+            android:id="@+id/nav_scanner"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/menu_scanner" />
+        <item
+            android:id="@+id/nav_decklist"
+            android:icon="@drawable/ic_menu_decklist"
+            android:title="@string/menu_decklist" />
+        <item
+            android:id="@+id/nav_wishlist"
+            android:icon="@drawable/ic_menu_wishlist"
+            android:title="@string/menu_wishlist" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_menu_profile"
+            android:title="@string/menu_profile" />
+    </group>
+</menu>
