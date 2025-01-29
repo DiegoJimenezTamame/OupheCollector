@@ -1,4 +1,4 @@
 package local.ouphecollector.activities;
 
-public class DecklistActivity {
+public class DeckActivity {
 }
