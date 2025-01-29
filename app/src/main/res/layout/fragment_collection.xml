@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/collection_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <TextView
         android:id="@+id/username_text_view"
         android:layout_width="0dp"

@@ -18,15 +18,14 @@ import local.ouphecollector.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         // View Binding setup
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        local.ouphecollector.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Set up the toolbar
@@ -37,18 +36,20 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
-        // Configure the navigation drawer
-        appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_collection, R.id.nav_scanner, R.id.nav_decklist,
-                R.id.nav_wishlist, R.id.nav_profile)
-                .setOpenableLayout(drawer)
-                .build();
-
         // Set up Navigation Controller
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment_content_main);
         assert navHostFragment != null;
-        NavController navController = navHostFragment.getNavController();
+        navController = navHostFragment.getNavController();
+
+        // Configure the navigation drawer
+        appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_home, R.id.nav_collection, R.id.nav_scanner, R.id.nav_deck,
+                R.id.nav_wishlist, R.id.nav_profile)
+                .setOpenableLayout(drawer)
+                .build();
+
+        // Link the action bar and the navigation drawer
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
@@ -61,10 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.nav_host_fragment_content_main);
-        assert navHostFragment != null;
-        NavController navController = navHostFragment.getNavController();
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }

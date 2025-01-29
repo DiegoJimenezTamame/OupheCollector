@@ -4,6 +4,7 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 import local.ouphecollector.database.dao.CardDao;
 import local.ouphecollector.models.Card;
@@ -15,8 +16,10 @@ import local.ouphecollector.database.dao.CollectionDao;
 import local.ouphecollector.database.dao.DeckDao;
 import local.ouphecollector.database.dao.ProfileDao;
 import local.ouphecollector.database.dao.WishlistDao;
+import local.ouphecollector.utils.TimestampConverter;
 
 @Database(entities = {Card.class, Collection.class, Deck.class, Profile.class, Wishlist.class}, version = 1)
+@TypeConverters({TimestampConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract CardDao cardDao();

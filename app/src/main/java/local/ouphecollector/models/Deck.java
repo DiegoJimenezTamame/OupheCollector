@@ -3,8 +3,10 @@ package local.ouphecollector.models;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
+import androidx.room.TypeConverters;
 import java.sql.Timestamp;
+
+import local.ouphecollector.utils.TimestampConverter;
 
 @Entity
 public class Deck {
@@ -12,7 +14,9 @@ public class Deck {
     private int id;
     private String name;
     private String format;
+    @TypeConverters({TimestampConverter.class})
     private Timestamp created_at;
+
 
     // Constructor, getters, and setters
     public Deck(String name, String format, Timestamp created_at) {
