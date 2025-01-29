@@ -20,7 +20,6 @@ public class ProfileFragment extends Fragment {
     private TextView usernameTextView;
     private TextView emailTextView;
 
-    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

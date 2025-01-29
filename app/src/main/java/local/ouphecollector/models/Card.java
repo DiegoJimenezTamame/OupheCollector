@@ -1,10 +1,13 @@
 package local.ouphecollector.models;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
 public class Card {
+
+    @NonNull
     @PrimaryKey
     private String id; // Scryfall ID or other unique identifier
     private String name;

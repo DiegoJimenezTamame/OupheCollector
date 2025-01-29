@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <item name="collection_recycler_view" type="id">collection recycler view</item>
-    <item name="username_text_view" type="id">usernamer text view</item>
-    <item name="email_text_view" type="id">email text view</item>
-    <item name="wishlist_recycler_view" type="id">wishlist recycler view</item>
-    <item name="deck_recycler_view" type="id">deck recycler view</item>
-</resources>
