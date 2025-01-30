@@ -23,9 +23,9 @@ public interface CardDao {
     @Delete
     void delete(Card card);
 
-    @Query("SELECT * FROM Card")
+    @Query("SELECT * FROM cards") // Corrected table name: "cards"
     LiveData<List<Card>> getAllCards();
 
-    @Query("SELECT * FROM Card WHERE id = :cardId")
+    @Query("SELECT * FROM cards WHERE id = :cardId") // Corrected table name: "cards" and column name: "id"
     Card getCardById(String cardId);
 }

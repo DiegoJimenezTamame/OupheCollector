@@ -22,9 +22,9 @@ public interface ProfileDao {
     @Delete
     void delete(Profile profile);
 
-    @Query("SELECT * FROM Profile")
-    LiveData<List<Profile>> getAllProfiles(); // Changed to LiveData
+    @Query("SELECT * FROM profile") // Changed to "profile"
+    LiveData<List<Profile>> getAllProfiles();
 
-    @Query("SELECT * FROM Profile WHERE id = :profileId")
+    @Query("SELECT * FROM profile WHERE id = :profileId") // Changed to "profile"
     Profile getProfileById(int profileId);
 }

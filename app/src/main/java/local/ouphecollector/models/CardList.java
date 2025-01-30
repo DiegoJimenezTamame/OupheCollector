@@ -1,22 +1,19 @@
 package local.ouphecollector.models;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 public class CardList {
-    @SerializedName("data")
-    private List<Card> cards;
+    private List<Card> data;
 
-    public CardList(List<Card> cards) {
-        this.cards = cards;
+    public CardList(List<Card> data) {
+        this.data = data;
     }
 
-    public List<Card> getCards() {
-        return cards;
+    public List<Card> getData() {
+        return data;
     }
 
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
+    public void setData(List<Card> data) {
+        this.data = data;
     }
 }

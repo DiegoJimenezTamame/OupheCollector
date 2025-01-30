@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-@Entity
+@Entity(tableName = "cards")
 public class Card {
     @PrimaryKey
     @NonNull

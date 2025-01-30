@@ -22,9 +22,9 @@ public interface DeckDao {
     @Delete
     void delete(Deck deck);
 
-    @Query("SELECT * FROM Deck")
-    LiveData<List<Deck>> getAllDecks(); // Changed to LiveData
+    @Query("SELECT * FROM deck") // Changed to "deck"
+    LiveData<List<Deck>> getAllDecks();
 
-    @Query("SELECT * FROM Deck WHERE id = :deckId")
+    @Query("SELECT * FROM deck WHERE id = :deckId") // Changed to "deck"
     Deck getDeckById(int deckId);
 }

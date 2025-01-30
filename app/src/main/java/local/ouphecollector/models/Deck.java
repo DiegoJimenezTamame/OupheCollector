@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 import local.ouphecollector.utils.TimestampConverter;
 
-@Entity
+@Entity(tableName = "deck")
 public class Deck {
     @PrimaryKey(autoGenerate = true)
     private int id;

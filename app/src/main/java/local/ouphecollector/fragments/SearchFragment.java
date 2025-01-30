@@ -12,23 +12,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import local.ouphecollector.R;
 import local.ouphecollector.adapters.CardAdapter;
 import local.ouphecollector.models.Card;
 import local.ouphecollector.viewmodels.CardViewModel;
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements CardAdapter.CardClickListener {
     private CardViewModel cardViewModel;
     private CardAdapter cardAdapter;
     private RecyclerView recyclerView;
     private SearchView searchView;
-    private TextView advancedSearchTextView; // Declare the variable here
+    private TextView advancedSearchTextView;
 
     @Nullable
     @Override
@@ -38,7 +40,7 @@ public class SearchFragment extends Fragment {
         // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        cardAdapter = new CardAdapter(new ArrayList<>(), this::onCardClicked);
+        cardAdapter = new CardAdapter(new ArrayList<>(), this);
         recyclerView.setAdapter(cardAdapter);
 
         // Initialize SearchView
@@ -58,7 +60,7 @@ public class SearchFragment extends Fragment {
         });
 
         // Initialize Advanced Search TextView
-        advancedSearchTextView = view.findViewById(R.id.advancedSearchTextView); // Initialize the variable here
+        advancedSearchTextView = view.findViewById(R.id.advancedSearchTextView);
         advancedSearchTextView.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Advanced Search clicked", Toast.LENGTH_SHORT).show();
             // TODO: Navigate to advanced search fragment
@@ -75,19 +77,15 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
-    private void onCardClicked(Card card) {
-        // This method is empty for now, but we'll add the navigation code back later
-    }
-
     private void searchCards(String query) {
         cardViewModel.searchCards(query).observe(getViewLifecycleOwner(), cards -> {
             cardAdapter.setCards(cards);
         });
     }
 
-    /*private void onCardClicked(Card card) {
-        SearchFragmentDirections.ActionNavSearchToNavCardDetail action =
-                SearchFragmentDirections.actionNavSearchToNavCardDetail(card.getName());
+    @Override
+    public void onCardClicked(Card card) {
+        NavDirections action = SearchFragmentDirections.actionNavSearchToNavCardDetail(card.getName());
         Navigation.findNavController(requireView()).navigate(action);
-    }*/
+    }
 }

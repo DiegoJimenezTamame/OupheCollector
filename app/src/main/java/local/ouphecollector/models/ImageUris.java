@@ -3,9 +3,13 @@ package local.ouphecollector.models;
 import com.google.gson.annotations.SerializedName;
 
 public class ImageUris {
+    @SerializedName("small")
     private String small;
+    @SerializedName("normal")
     private String normal;
+    @SerializedName("large")
     private String large;
+    @SerializedName("png")
     private String png;
     @SerializedName("art_crop")
     private String artCrop;

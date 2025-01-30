@@ -12,43 +12,17 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_collection"
-        android:name="local.ouphecollector.fragments.CollectionFragment"
-        android:label="@string/menu_collection"
-        tools:layout="@layout/fragment_collection" />
-
-    <fragment
-        android:id="@+id/nav_scanner"
-        android:name="local.ouphecollector.fragments.ScannerFragment"
-        android:label="@string/menu_scanner"
-        tools:layout="@layout/fragment_scanner" />
-
-    <fragment
-        android:id="@+id/nav_decklist"
-        android:name="local.ouphecollector.fragments.DeckFragment"
-        android:label="@string/menu_decklist"
-        tools:layout="@layout/fragment_deck" />
-
-    <fragment
-        android:id="@+id/nav_wishlist"
-        android:name="local.ouphecollector.fragments.WishlistFragment"
-        android:label="@string/menu_wishlist"
-        tools:layout="@layout/fragment_wishlist" />
-
-    <fragment
-        android:id="@+id/nav_profile"
-        android:name="local.ouphecollector.fragments.ProfileFragment"
-        android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_profile" />
-
-    <fragment
         android:id="@+id/nav_search"
         android:name="local.ouphecollector.fragments.SearchFragment"
         android:label="@string/menu_search"
         tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_nav_search_to_nav_card_detail"
-            app:destination="@id/nav_card_detail" />
+            app:destination="@id/nav_card_detail">
+            <argument
+                android:name="cardName"
+                app:argType="string" />
+        </action>
     </fragment>
 
     <fragment

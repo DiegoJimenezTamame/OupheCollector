@@ -3,7 +3,7 @@ package local.ouphecollector.models;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "wishlist")
 public class Wishlist {
     @PrimaryKey(autoGenerate = true)
     private int id;

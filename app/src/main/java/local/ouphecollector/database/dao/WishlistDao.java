@@ -22,12 +22,12 @@ public interface WishlistDao {
     @Delete
     void delete(Wishlist wishlist);
 
-    @Query("SELECT * FROM Wishlist")
-    LiveData<List<Wishlist>> getAllWishlists(); // Changed to LiveData
+    @Query("SELECT * FROM wishlist") // Changed to "wishlist"
+    LiveData<List<Wishlist>> getAllWishlists();
 
-    @Query("SELECT * FROM Wishlist WHERE id = :wishlistId")
+    @Query("SELECT * FROM wishlist WHERE id = :wishlistId") // Changed to "wishlist"
     Wishlist getWishlistById(int wishlistId);
 
-    @Query("SELECT * FROM Wishlist WHERE card_id = :cardId")
+    @Query("SELECT * FROM wishlist WHERE card_id = :cardId") // Changed to "wishlist"
     List<Wishlist> getWishlistsByCardId(String cardId);
 }

@@ -5,81 +5,77 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
-import local.ouphecollector.api.ScryfallApiService;
-import local.ouphecollector.api.ScryfallRetrofit;
+import local.ouphecollector.api.CardApiService;
+import local.ouphecollector.api.RetrofitClient;
 import local.ouphecollector.database.AppDatabase;
 import local.ouphecollector.database.dao.CardDao;
+import local.ouphecollector.database.dao.CardListDao;
 import local.ouphecollector.models.Card;
 import local.ouphecollector.models.CardList;
-import okhttp3.MultipartBody;
+import local.ouphecollector.models.CardListEntity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CardRepository {
-    private final ScryfallApiService scryfallApiService;
     private final CardDao cardDao;
+    private final CardListDao cardListDao;
+    private final CardApiService cardApiService;
+    private final Executor executor = Executors.newSingleThreadExecutor();
 
     public CardRepository(AppDatabase appDatabase) {
-        ScryfallRetrofit scryfallRetrofit = new ScryfallRetrofit();
-        this.scryfallApiService = scryfallRetrofit.getScryfallApiService();
-        this.cardDao = appDatabase.cardDao();
+        cardDao = appDatabase.cardDao();
+        cardListDao = appDatabase.cardListDao();
+        cardApiService = RetrofitClient.getRetrofitInstance().create(CardApiService.class);
+    }
+
+    public LiveData<List<Card>> getAllCardsFromDatabase() {
+        return cardDao.getAllCards();
     }
 
     public LiveData<List<Card>> searchCards(String query) {
-        MutableLiveData<List<Card>> data = new MutableLiveData<>();
-        scryfallApiService.searchCards(query).enqueue(new Callback<CardList>() {
+        MutableLiveData<List<Card>> searchResults = new MutableLiveData<>();
+        Call<CardList> call = cardApiService.searchCardsByName(query); // Use the new method
+
+        call.enqueue(new Callback<CardList>() {
             @Override
             public void onResponse(Call<CardList> call, Response<CardList> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     CardList cardList = response.body();
-                    if (cardList != null) {
-                        data.setValue(cardList.getCards());
-                    }
+                    List<Card> cards = cardList.getData();
+                    searchResults.setValue(cards);
+
+                    // Store the card list in the database
+                    executor.execute(() -> {
+                        String cardIds = cards.stream()
+                                .map(Card::getId)
+                                .collect(Collectors.joining(","));
+                        CardListEntity cardListEntity = new CardListEntity(cardIds);
+                        cardListDao.insert(cardListEntity);
+                    });
                 } else {
                     Log.e("CardRepository", "Error searching cards: " + response.message());
+                    searchResults.setValue(new ArrayList<>());
                 }
             }
 
             @Override
             public void onFailure(Call<CardList> call, Throwable t) {
                 Log.e("CardRepository", "Error searching cards", t);
+                searchResults.setValue(new ArrayList<>());
             }
         });
-        return data;
+
+        return searchResults;
     }
 
-    public LiveData<List<Card>> searchCardsByImage(MultipartBody.Part image) {
-        MutableLiveData<List<Card>> data = new MutableLiveData<>();
-        scryfallApiService.searchCardsByImage(image).enqueue(new Callback<CardList>() {
-            @Override
-            public void onResponse(Call<CardList> call, Response<CardList> response) {
-                if (response.isSuccessful()) {
-                    CardList cardList = response.body();
-                    if (cardList != null) {
-                        data.setValue(cardList.getCards());
-                    }
-                } else {
-                    Log.e("CardRepository", "Error searching cards by image: " + response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CardList> call, Throwable t) {
-                Log.e("CardRepository", "Error searching cards by image", t);
-            }
-        });
-        return data;
-    }
-
-    public void insertCard(Card card) {
-        // Insert the card in the database
-        cardDao.insert(card);
-    }
-
-    public LiveData<List<Card>> getAllCardsFromDatabase() {
-        return cardDao.getAllCards();
+    public Card getCardById(String cardId) {
+        return cardDao.getCardById(cardId);
     }
 }

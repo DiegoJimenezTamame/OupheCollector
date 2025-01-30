@@ -22,12 +22,12 @@ public interface CollectionDao {
     @Delete
     void delete(Collection collection);
 
-    @Query("SELECT * FROM Collection")
-    LiveData<List<Collection>> getAllCollections(); // Changed to LiveData
+    @Query("SELECT * FROM collection") // Changed to "collection"
+    LiveData<List<Collection>> getAllCollections();
 
-    @Query("SELECT * FROM Collection WHERE id = :collectionId")
+    @Query("SELECT * FROM collection WHERE id = :collectionId") // Changed to "collection"
     Collection getCollectionById(int collectionId);
 
-    @Query("SELECT * FROM Collection WHERE card_id = :cardId")
+    @Query("SELECT * FROM collection WHERE card_id = :cardId") // Changed to "collection"
     List<Collection> getCollectionsByCardId(String cardId);
 }

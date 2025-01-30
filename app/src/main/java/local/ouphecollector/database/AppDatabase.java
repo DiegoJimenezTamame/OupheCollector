@@ -11,22 +11,25 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import local.ouphecollector.database.dao.CardDao;
+import local.ouphecollector.database.dao.CardListDao;
 import local.ouphecollector.database.dao.CollectionDao;
 import local.ouphecollector.database.dao.DeckDao;
 import local.ouphecollector.database.dao.ProfileDao;
 import local.ouphecollector.database.dao.WishlistDao;
 import local.ouphecollector.models.Card;
+import local.ouphecollector.models.CardListEntity;
 import local.ouphecollector.models.Collection;
 import local.ouphecollector.models.Deck;
 import local.ouphecollector.models.Profile;
 import local.ouphecollector.models.Wishlist;
 import local.ouphecollector.utils.TimestampConverter;
 
-@Database(entities = {Card.class, Collection.class, Deck.class, Profile.class, Wishlist.class}, version = 2, exportSchema = false)
+@Database(entities = {Card.class, CardListEntity.class, Collection.class, Deck.class, Profile.class, Wishlist.class}, version = 3, exportSchema = false)
 @TypeConverters({TimestampConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract CardDao cardDao();
+    public abstract CardListDao cardListDao(); // Add this line
     public abstract CollectionDao collectionDao();
     public abstract DeckDao deckDao();
     public abstract ProfileDao profileDao();
