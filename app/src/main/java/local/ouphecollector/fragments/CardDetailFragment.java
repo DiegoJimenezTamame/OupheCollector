@@ -20,8 +20,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CardDetailFragment extends Fragment {
-    private static final String ARG_CARD_NAME = "cardName";
-    private String cardName;
     private TextView cardNameTextView;
     private TextView cardManaCostTextView;
     private TextView cardTypeTextView;
@@ -29,22 +27,6 @@ public class CardDetailFragment extends Fragment {
     private TextView cardSetTextView;
     private TextView cardTextTextView;
     private TextView cardPowerToughnessTextView;
-
-    public static CardDetailFragment newInstance(String cardName) {
-        CardDetailFragment fragment = new CardDetailFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_CARD_NAME, cardName);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            cardName = getArguments().getString(ARG_CARD_NAME);
-        }
-    }
 
     @Nullable
     @Override
@@ -59,7 +41,12 @@ public class CardDetailFragment extends Fragment {
         cardTextTextView = view.findViewById(R.id.cardTextTextView);
         cardPowerToughnessTextView = view.findViewById(R.id.cardPowerToughnessTextView);
 
-        fetchCardDetails(cardName);
+        // Get the arguments from the Bundle
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String cardName = bundle.getString("cardName");
+            fetchCardDetails(cardName);
+        }
 
         return view;
     }
@@ -68,9 +55,9 @@ public class CardDetailFragment extends Fragment {
         CardApiService apiService = RetrofitClient.getRetrofitInstance().create(CardApiService.class);
         Call<Card> call = apiService.getCardByName(cardName);
 
-        call.enqueue(new Callback<Card>() {
+        call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<Card> call, Response<Card> response) {
+            public void onResponse(@NonNull Call<Card> call, @NonNull Response<Card> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Card card = response.body();
                     updateUI(card);
@@ -80,7 +67,7 @@ public class CardDetailFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<Card> call, Throwable t) {
+            public void onFailure(@NonNull Call<Card> call, @NonNull Throwable t) {
                 Log.e("CardDetailFragment", "Error fetching card details", t);
             }
         });

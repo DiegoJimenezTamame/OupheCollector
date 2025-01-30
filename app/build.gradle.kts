@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
-    id("androidx.navigation.safeargs")
+    id("org.jetbrains.kotlin.android") // Add this line
+    id("androidx.navigation.safeargs.kotlin") // Add this line
 }
 
 android {
@@ -32,6 +33,10 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+
+    kotlinOptions {
+        jvmTarget = "17" // Or your desired version, must match Java
     }
 }
 

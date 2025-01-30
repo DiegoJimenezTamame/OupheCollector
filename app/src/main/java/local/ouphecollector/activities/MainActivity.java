@@ -19,13 +19,14 @@ import local.ouphecollector.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private NavController navController;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // View Binding setup
-        local.ouphecollector.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Set up the toolbar
@@ -44,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Configure the navigation drawer
         appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_collection, R.id.nav_scanner, R.id.nav_decklist,
-                R.id.nav_wishlist, R.id.nav_profile)
+                R.id.nav_home, R.id.nav_collection, R.id.nav_decklist,
+                R.id.nav_profile, R.id.nav_wishlist, R.id.nav_search)
                 .setOpenableLayout(drawer)
                 .build();
 

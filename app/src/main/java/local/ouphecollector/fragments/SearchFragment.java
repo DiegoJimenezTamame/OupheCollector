@@ -11,14 +11,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import local.ouphecollector.R;
 import local.ouphecollector.adapters.CardAdapter;
@@ -70,22 +69,40 @@ public class SearchFragment extends Fragment implements CardAdapter.CardClickLis
         cardViewModel = new ViewModelProvider(this).get(CardViewModel.class);
 
         // Observe all cards
-        cardViewModel.getAllCards().observe(getViewLifecycleOwner(), cards -> {
-            cardAdapter.setCards(cards);
-        });
+        cardViewModel.getAllCards().observe(getViewLifecycleOwner(), cards -> cardAdapter.setCards(cards));
 
         return view;
     }
 
     private void searchCards(String query) {
-        cardViewModel.searchCards(query).observe(getViewLifecycleOwner(), cards -> {
-            cardAdapter.setCards(cards);
-        });
+        cardViewModel.searchCards(query).observe(getViewLifecycleOwner(), cards -> cardAdapter.setCards(cards));
     }
 
     @Override
     public void onCardClicked(Card card) {
-        NavDirections action = SearchFragmentDirections.actionNavSearchToNavCardDetail(card.getName());
-        Navigation.findNavController(requireView()).navigate(action);
+        // Create a new instance of CardDetailFragment
+        CardDetailFragment cardDetailFragment = new CardDetailFragment();
+
+        // Create a Bundle to pass the card name
+        Bundle bundle = new Bundle();
+        bundle.putString("cardName", card.getName());
+
+        // Set the arguments to the fragment
+        cardDetailFragment.setArguments(bundle);
+
+        // Get the FragmentManager
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+
+        // Start a FragmentTransaction
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Replace the current fragment with CardDetailFragment
+        fragmentTransaction.replace(R.id.nav_host_fragment_content_main, cardDetailFragment);
+
+        // Add the transaction to the back stack (optional)
+        fragmentTransaction.addToBackStack(null);
+
+        // Commit the transaction
+        fragmentTransaction.commit();
     }
 }
