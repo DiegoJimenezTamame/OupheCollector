@@ -2,6 +2,8 @@ package local.ouphecollector.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import local.ouphecollector.database.AppDatabase;
 import local.ouphecollector.database.dao.CollectionDao;
 import local.ouphecollector.models.Collection;
@@ -10,14 +12,16 @@ import java.util.List;
 
 public class CollectionRepository {
     private CollectionDao collectionDao;
+    private LiveData<List<Collection>> allCollections;
 
     public CollectionRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         collectionDao = db.collectionDao();
+        allCollections = collectionDao.getAllCollections();
     }
 
-    public List<Collection> getAllCollections() {
-        return collectionDao.getAllCollections();
+    public LiveData<List<Collection>> getAllCollections() {
+        return allCollections; // Changed to LiveData
     }
 
     public Collection getCollectionById(int collectionId) {
@@ -29,14 +33,20 @@ public class CollectionRepository {
     }
 
     public void insertCollection(Collection collection) {
-        collectionDao.insert(collection);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            collectionDao.insert(collection);
+        });
     }
 
     public void updateCollection(Collection collection) {
-        collectionDao.update(collection);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            collectionDao.update(collection);
+        });
     }
 
     public void deleteCollection(Collection collection) {
-        collectionDao.delete(collection);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            collectionDao.delete(collection);
+        });
     }
 }

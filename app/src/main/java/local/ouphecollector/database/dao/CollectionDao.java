@@ -1,5 +1,6 @@
 package local.ouphecollector.database.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -22,7 +23,7 @@ public interface CollectionDao {
     void delete(Collection collection);
 
     @Query("SELECT * FROM Collection")
-    List<Collection> getAllCollections();
+    LiveData<List<Collection>> getAllCollections(); // Changed to LiveData
 
     @Query("SELECT * FROM Collection WHERE id = :collectionId")
     Collection getCollectionById(int collectionId);

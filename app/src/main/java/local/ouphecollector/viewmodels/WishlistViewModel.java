@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import local.ouphecollector.models.Wishlist;
 import local.ouphecollector.repository.WishlistRepository;
@@ -18,31 +17,22 @@ public class WishlistViewModel extends AndroidViewModel {
     public WishlistViewModel(Application application) {
         super(application);
         wishlistRepository = new WishlistRepository(application);
-        allWishlists = new MutableLiveData<>();
-        loadAllWishlists();
+        allWishlists = wishlistRepository.getAllWishlists();
     }
 
     public LiveData<List<Wishlist>> getAllWishlists() {
         return allWishlists;
     }
 
-    public void loadAllWishlists() {
-        List<Wishlist> wishlists = wishlistRepository.getAllWishlists();
-        ((MutableLiveData<List<Wishlist>>) allWishlists).setValue(wishlists);
-    }
-
     public void insertWishlist(Wishlist wishlist) {
         wishlistRepository.insertWishlist(wishlist);
-        loadAllWishlists();
     }
 
     public void updateWishlist(Wishlist wishlist) {
         wishlistRepository.updateWishlist(wishlist);
-        loadAllWishlists();
     }
 
     public void deleteWishlist(Wishlist wishlist) {
         wishlistRepository.deleteWishlist(wishlist);
-        loadAllWishlists();
     }
 }

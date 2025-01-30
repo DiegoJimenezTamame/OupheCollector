@@ -1,5 +1,6 @@
 package local.ouphecollector.database.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -22,7 +23,7 @@ public interface WishlistDao {
     void delete(Wishlist wishlist);
 
     @Query("SELECT * FROM Wishlist")
-    List<Wishlist> getAllWishlists();
+    LiveData<List<Wishlist>> getAllWishlists(); // Changed to LiveData
 
     @Query("SELECT * FROM Wishlist WHERE id = :wishlistId")
     Wishlist getWishlistById(int wishlistId);

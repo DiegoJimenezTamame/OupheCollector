@@ -2,6 +2,8 @@ package local.ouphecollector.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import local.ouphecollector.database.AppDatabase;
 import local.ouphecollector.database.dao.ProfileDao;
 import local.ouphecollector.models.Profile;
@@ -10,14 +12,16 @@ import java.util.List;
 
 public class ProfileRepository {
     private ProfileDao profileDao;
+    private LiveData<List<Profile>> allProfiles;
 
     public ProfileRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         profileDao = db.profileDao();
+        allProfiles = profileDao.getAllProfiles();
     }
 
-    public List<Profile> getAllProfiles() {
-        return profileDao.getAllProfiles();
+    public LiveData<List<Profile>> getAllProfiles() {
+        return allProfiles; // Changed to LiveData
     }
 
     public Profile getProfileById(int profileId) {
@@ -25,14 +29,20 @@ public class ProfileRepository {
     }
 
     public void insertProfile(Profile profile) {
-        profileDao.insert(profile);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            profileDao.insert(profile);
+        });
     }
 
     public void updateProfile(Profile profile) {
-        profileDao.update(profile);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            profileDao.update(profile);
+        });
     }
 
     public void deleteProfile(Profile profile) {
-        profileDao.delete(profile);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            profileDao.delete(profile);
+        });
     }
 }

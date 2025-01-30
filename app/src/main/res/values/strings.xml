@@ -25,4 +25,8 @@
     <string name="quantity">Quantity</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
+    <string name="new_username">New Username</string>
+    <string name="new_email">New Email</string>
+    <string name="create_profile">Create Profile</string>
+    <string name="profile_created">Profile created successfully!</string>
 </resources>

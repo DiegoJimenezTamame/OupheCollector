@@ -1,5 +1,6 @@
 package local.ouphecollector.database.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -22,7 +23,7 @@ public interface ProfileDao {
     void delete(Profile profile);
 
     @Query("SELECT * FROM Profile")
-    List<Profile> getAllProfiles();
+    LiveData<List<Profile>> getAllProfiles(); // Changed to LiveData
 
     @Query("SELECT * FROM Profile WHERE id = :profileId")
     Profile getProfileById(int profileId);

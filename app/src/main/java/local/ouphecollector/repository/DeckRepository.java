@@ -2,6 +2,8 @@ package local.ouphecollector.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import local.ouphecollector.database.AppDatabase;
 import local.ouphecollector.database.dao.DeckDao;
 import local.ouphecollector.models.Deck;
@@ -10,14 +12,16 @@ import java.util.List;
 
 public class DeckRepository {
     private DeckDao deckDao;
+    private LiveData<List<Deck>> allDecks;
 
     public DeckRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         deckDao = db.deckDao();
+        allDecks = deckDao.getAllDecks();
     }
 
-    public List<Deck> getAllDecks() {
-        return deckDao.getAllDecks();
+    public LiveData<List<Deck>> getAllDecks() {
+        return allDecks; // Changed to LiveData
     }
 
     public Deck getDeckById(int deckId) {
@@ -25,14 +29,20 @@ public class DeckRepository {
     }
 
     public void insertDeck(Deck deck) {
-        deckDao.insert(deck);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            deckDao.insert(deck);
+        });
     }
 
     public void updateDeck(Deck deck) {
-        deckDao.update(deck);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            deckDao.update(deck);
+        });
     }
 
     public void deleteDeck(Deck deck) {
-        deckDao.delete(deck);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            deckDao.delete(deck);
+        });
     }
 }
