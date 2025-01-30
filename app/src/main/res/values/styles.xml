@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/values/styles.xml -->
+<resources>
+    <!-- Base application theme. -->
+    <style name="NavigationDrawerStyle" parent="Widget.MaterialComponents.NavigationView">
+        <item name="itemIconSize">48dp</item> <!-- Adjust icon size as needed -->
+        <item name="android:textSize">20sp</item> <!-- Adjust text size as needed -->
+        <item name="android:paddingStart">16dp</item> <!-- Adjust padding as needed -->
+        <item name="android:paddingEnd">16dp</item> <!-- Adjust padding as needed -->
+        <item name="android:paddingTop">16dp</item> <!-- Add top padding -->
+        <item name="android:paddingBottom">16dp</item> <!-- Add bottom padding -->
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>
