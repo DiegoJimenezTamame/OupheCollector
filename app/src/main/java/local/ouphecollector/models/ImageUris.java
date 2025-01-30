@@ -16,15 +16,7 @@ public class ImageUris {
     @SerializedName("border_crop")
     private String borderCrop;
 
-    public ImageUris(String small, String normal, String large, String png, String artCrop, String borderCrop) {
-        this.small = small;
-        this.normal = normal;
-        this.large = large;
-        this.png = png;
-        this.artCrop = artCrop;
-        this.borderCrop = borderCrop;
-    }
-
+    // --- Getters and Setters ---
     public String getSmall() {
         return small;
     }

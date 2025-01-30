@@ -1,59 +1,86 @@
 package local.ouphecollector.models;
 
 import androidx.annotation.NonNull;
-import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-@Entity(tableName = "cards")
+import java.util.List;
+
+@Entity
 public class Card {
+
     @PrimaryKey
     @NonNull
-    private String id;
+    @SerializedName("id")
+    public String id ="";
+
+    @SerializedName("name")
     private String name;
-    @Embedded
-    @SerializedName("image_uris")
-    private ImageUris imageUris;
+
     @SerializedName("mana_cost")
     private String manaCost;
+
     @SerializedName("type_line")
     private String typeLine;
+
     @SerializedName("oracle_text")
     private String oracleText;
+
+    @SerializedName("power")
+    private String power;
+
+    @SerializedName("toughness")
+    private String toughness;
+
+    @SerializedName("colors")
+    private List<String> colors;
+
+    @SerializedName("color_identity")
+    private List<String> colorIdentity;
+
+    @SerializedName("artist")
+    private String artist;
+
+    @SerializedName("rarity")
+    private String rarity;
+
+    @SerializedName("set")
+    private String set;
+
     @SerializedName("flavor_text")
     private String flavorText;
-    private String set;
-    private String rarity;
-    @SerializedName("collector_number")
-    private String collectorNumber;
-    private String power;
-    private String toughness;
-    @Embedded
+
+    @SerializedName("image_uris")
+    private ImageUris imageUris;
+
+    @SerializedName("legalities")
     private Legalities legalities;
 
-    public Card(String id, String name, ImageUris imageUris, String manaCost, String typeLine, String oracleText, String flavorText, String set, String rarity, String collectorNumber, String power, String toughness, Legalities legalities) {
-        this.id = id;
-        this.name = name;
-        this.imageUris = imageUris;
-        this.manaCost = manaCost;
-        this.typeLine = typeLine;
-        this.oracleText = oracleText;
-        this.flavorText = flavorText;
-        this.set = set;
-        this.rarity = rarity;
-        this.collectorNumber = collectorNumber;
-        this.power = power;
-        this.toughness = toughness;
-        this.legalities = legalities;
+    @SerializedName("related_uris")
+    private RelatedUris relatedUris;
+
+    @SerializedName("all_parts")
+    private List<RelatedCard> allParts;
+
+
+    // --- Getters and Setters ---
+
+    public List<RelatedCard> getAllParts() {
+        return allParts;
     }
 
+    public void setAllParts(List<RelatedCard> allParts) {
+        this.allParts = allParts;
+    }
+
+    @NonNull
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -63,14 +90,6 @@ public class Card {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public ImageUris getImageUris() {
-        return imageUris;
-    }
-
-    public void setImageUris(ImageUris imageUris) {
-        this.imageUris = imageUris;
     }
 
     public String getManaCost() {
@@ -97,38 +116,6 @@ public class Card {
         this.oracleText = oracleText;
     }
 
-    public String getFlavorText() {
-        return flavorText;
-    }
-
-    public void setFlavorText(String flavorText) {
-        this.flavorText = flavorText;
-    }
-
-    public String getSet() {
-        return set;
-    }
-
-    public void setSet(String set) {
-        this.set = set;
-    }
-
-    public String getRarity() {
-        return rarity;
-    }
-
-    public void setRarity(String rarity) {
-        this.rarity = rarity;
-    }
-
-    public String getCollectorNumber() {
-        return collectorNumber;
-    }
-
-    public void setCollectorNumber(String collectorNumber) {
-        this.collectorNumber = collectorNumber;
-    }
-
     public String getPower() {
         return power;
     }
@@ -145,6 +132,62 @@ public class Card {
         this.toughness = toughness;
     }
 
+    public List<String> getColors() {
+        return colors;
+    }
+
+    public void setColors(List<String> colors) {
+        this.colors = colors;
+    }
+
+    public List<String> getColorIdentity() {
+        return colorIdentity;
+    }
+
+    public void setColorIdentity(List<String> colorIdentity) {
+        this.colorIdentity = colorIdentity;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(String rarity) {
+        this.rarity = rarity;
+    }
+
+    public String getSet() {
+        return set;
+    }
+
+    public void setSet(String set) {
+        this.set = set;
+    }
+
+    public String getFlavorText() {
+        return flavorText;
+    }
+
+    public void setFlavorText(String flavorText) {
+        this.flavorText = flavorText;
+    }
+
+    public ImageUris getImageUris() {
+        return imageUris;
+    }
+
+    public void setImageUris(ImageUris imageUris) {
+        this.imageUris = imageUris;
+    }
+
     public Legalities getLegalities() {
         return legalities;
     }
@@ -152,4 +195,13 @@ public class Card {
     public void setLegalities(Legalities legalities) {
         this.legalities = legalities;
     }
+
+    public RelatedUris getRelatedUris() {
+        return relatedUris;
+    }
+
+    public void setRelatedUris(RelatedUris relatedUris) {
+        this.relatedUris = relatedUris;
+    }
+
 }

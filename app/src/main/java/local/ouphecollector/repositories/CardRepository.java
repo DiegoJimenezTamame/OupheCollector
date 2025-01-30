@@ -2,6 +2,7 @@ package local.ouphecollector.repositories;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -44,8 +45,9 @@ public class CardRepository {
         Call<CardList> call = cardApiService.searchCardsByName(query); // Use the new method
 
         call.enqueue(new Callback<CardList>() {
+
             @Override
-            public void onResponse(Call<CardList> call, Response<CardList> response) {
+            public void onResponse(@NonNull Call<CardList> call, Response<CardList> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     CardList cardList = response.body();
                     List<Card> cards = cardList.getData();
@@ -54,7 +56,7 @@ public class CardRepository {
                     // Store the card list in the database
                     executor.execute(() -> {
                         String cardIds = cards.stream()
-                                .map(Card::getId)
+                                .map(card -> String.valueOf(card.getId())) // Corrected line
                                 .collect(Collectors.joining(","));
                         CardListEntity cardListEntity = new CardListEntity(cardIds);
                         cardListDao.insert(cardListEntity);

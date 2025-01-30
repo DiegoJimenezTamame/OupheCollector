@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import local.ouphecollector.R;
 import local.ouphecollector.adapters.CardAdapter;
@@ -71,11 +72,23 @@ public class SearchFragment extends Fragment implements CardAdapter.CardClickLis
         // Observe all cards
         cardViewModel.getAllCards().observe(getViewLifecycleOwner(), cards -> cardAdapter.setCards(cards));
 
+        // Observe search results
+        cardViewModel.getSearchResults().observe(getViewLifecycleOwner(), cards -> {
+            cardAdapter.setCards(cards);
+        });
+
+        // Observe search errors
+        cardViewModel.getSearchError().observe(getViewLifecycleOwner(), error -> {
+            if (error) {
+                Toast.makeText(getContext(), "Error searching cards", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return view;
     }
 
     private void searchCards(String query) {
-        cardViewModel.searchCards(query).observe(getViewLifecycleOwner(), cards -> cardAdapter.setCards(cards));
+        cardViewModel.searchCards(query);
     }
 
     @Override

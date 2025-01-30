@@ -32,6 +32,7 @@
     <string name="card_name">Card Name</string>
     <string name="menu_search">Search</string>
     <string name="advanced_search">Advanced Search</string>
+
     <string name="card_name_textview">Card Name</string>
     <string name="mana_cost">Mana Cost</string>
     <string name="type">Type</string>
@@ -46,4 +47,11 @@
     <string name="set_format">Set: %1$s</string>
     <string name="card_text_format">Card Text: %1$s</string>
     <string name="power_toughness_format">Power/Toughness: %1$s/%2$s</string>
+    <string name="card_image">card image</string>
+    <string name="flavor_text_format">%s</string>
+    <string name="colors_format">Colors: %s</string>
+    <string name="color_identity_format">Color Identity: %s</string>
+    <string name="artist_format">Artist: %s</string>
+    <string name="oracle_text_format">%s</string>
+
 </resources>

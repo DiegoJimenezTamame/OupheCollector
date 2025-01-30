@@ -22,10 +22,11 @@ import local.ouphecollector.models.Collection;
 import local.ouphecollector.models.Deck;
 import local.ouphecollector.models.Profile;
 import local.ouphecollector.models.Wishlist;
+import local.ouphecollector.utils.Converters;
 import local.ouphecollector.utils.TimestampConverter;
 
 @Database(entities = {Card.class, CardListEntity.class, Collection.class, Deck.class, Profile.class, Wishlist.class}, version = 3, exportSchema = false)
-@TypeConverters({TimestampConverter.class})
+@TypeConverters({Converters.class, TimestampConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract CardDao cardDao();
