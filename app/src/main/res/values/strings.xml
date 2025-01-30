@@ -29,4 +29,15 @@
     <string name="new_email">New Email</string>
     <string name="create_profile">Create Profile</string>
     <string name="profile_created">Profile created successfully!</string>
+    <string name="card_name">Card Name</string>
+    <string name="menu_search">Search</string>
+    <string name="advanced_search">Advanced Search</string>
+    <string name="card_name_textview">Card Name</string>
+    <string name="mana_cost">Mana Cost</string>
+    <string name="type">Type</string>
+    <string name="rarity">Rarity</string>
+    <string name="set">Set</string>
+    <string name="card_text">Card Text</string>
+    <string name="power_toughness">Power/Toughness</string>
+    <string name="menu_card_detail">Card Detail</string>
 </resources>

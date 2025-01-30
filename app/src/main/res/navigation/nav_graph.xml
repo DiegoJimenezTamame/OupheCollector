@@ -40,4 +40,24 @@
         android:name="local.ouphecollector.fragments.ProfileFragment"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="local.ouphecollector.fragments.SearchFragment"
+        android:label="@string/menu_search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_nav_search_to_nav_card_detail"
+            app:destination="@id/nav_card_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_card_detail"
+        android:name="local.ouphecollector.fragments.CardDetailFragment"
+        android:label="@string/menu_card_detail"
+        tools:layout="@layout/fragment_card_detail">
+        <argument
+            android:name="cardName"
+            app:argType="string" />
+    </fragment>
 </navigation>

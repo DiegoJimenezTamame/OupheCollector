@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import local.ouphecollector.models.Deck;
-import local.ouphecollector.repository.DeckRepository;
+import local.ouphecollector.repositories.DeckRepository;
 
 import java.util.List;
 

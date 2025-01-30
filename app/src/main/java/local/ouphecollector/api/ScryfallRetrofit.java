@@ -1,23 +1,22 @@
 package local.ouphecollector.api;
 
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ScryfallApiClient {
+public class ScryfallRetrofit {
     private static final String BASE_URL = "https://api.scryfall.com/";
-    private ScryfallService scryfallService;
+    private final ScryfallApiService scryfallApiService;
 
-    public ScryfallApiClient() {
+    public ScryfallRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        scryfallService = retrofit.create(ScryfallService.class);
+        scryfallApiService = retrofit.create(ScryfallApiService.class);
     }
 
-    public Call<ScryfallResponse> searchCards(String query) {
-        return scryfallService.searchCards(query);
+    public ScryfallApiService getScryfallApiService() {
+        return scryfallApiService;
     }
 }

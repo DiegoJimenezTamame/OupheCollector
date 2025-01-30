@@ -1,4 +1,4 @@
-package local.ouphecollector.repository;
+package local.ouphecollector.repositories;
 
 import android.app.Application;
 

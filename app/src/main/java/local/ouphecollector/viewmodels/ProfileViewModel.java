@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import local.ouphecollector.models.Profile;
-import local.ouphecollector.repository.ProfileRepository;
+import local.ouphecollector.repositories.ProfileRepository;
 
 import java.util.List;
 

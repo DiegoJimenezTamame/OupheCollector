@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import local.ouphecollector.models.Wishlist;
-import local.ouphecollector.repository.WishlistRepository;
+import local.ouphecollector.repositories.WishlistRepository;
 
 import java.util.List;
 

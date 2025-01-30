@@ -1,4 +1,5 @@
 package local.ouphecollector.database;
+
 import android.content.Context;
 
 import androidx.room.Database;
@@ -10,18 +11,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import local.ouphecollector.database.dao.CardDao;
-import local.ouphecollector.models.Card;
-import local.ouphecollector.models.Deck;
-import local.ouphecollector.models.Collection;
-import local.ouphecollector.models.Profile;
-import local.ouphecollector.models.Wishlist;
 import local.ouphecollector.database.dao.CollectionDao;
 import local.ouphecollector.database.dao.DeckDao;
 import local.ouphecollector.database.dao.ProfileDao;
 import local.ouphecollector.database.dao.WishlistDao;
+import local.ouphecollector.models.Card;
+import local.ouphecollector.models.Collection;
+import local.ouphecollector.models.Deck;
+import local.ouphecollector.models.Profile;
+import local.ouphecollector.models.Wishlist;
 import local.ouphecollector.utils.TimestampConverter;
 
-@Database(entities = {Card.class, Collection.class, Deck.class, Profile.class, Wishlist.class}, version = 1, exportSchema = false)
+@Database(entities = {Card.class, Collection.class, Deck.class, Profile.class, Wishlist.class}, version = 2, exportSchema = false)
 @TypeConverters({TimestampConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -42,6 +43,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "mtg_collector_database")
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }

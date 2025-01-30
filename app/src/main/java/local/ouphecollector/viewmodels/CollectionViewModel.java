@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import local.ouphecollector.models.Collection;
-import local.ouphecollector.repository.CollectionRepository;
+import local.ouphecollector.repositories.CollectionRepository;
 
 import java.util.List;
 
