@@ -88,6 +88,9 @@ dependencies {
     implementation ("androidx.camera:camera-lifecycle:1.4.1")
     implementation ("androidx.camera:camera-view:1.4.1")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3") // Or the latest version
+
+
 
 
 }

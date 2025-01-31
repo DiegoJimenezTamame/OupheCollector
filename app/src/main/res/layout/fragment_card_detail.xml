@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,8 +15,10 @@
             android:layout_width="200dp"
             android:layout_height="300dp"
             android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/card_image"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/card_image" />
+            android:background="@color/light_gray"
+            tools:src="@drawable/no_image" />
 
         <TextView
             android:id="@+id/cardNameTextView"
@@ -23,10 +26,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="Card Name" />
 
-        <TextView
-            android:id="@+id/cardManaCostTextView"
+        <!-- Mana Cost View -->
+        <local.ouphecollector.views.ManaCostView
+            android:id="@+id/cardManaCostView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp" />
@@ -35,31 +40,37 @@
             android:id="@+id/cardTypeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            tools:text="Card Type" />
 
         <TextView
             android:id="@+id/cardRarityTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            tools:text="Card Rarity" />
 
         <TextView
             android:id="@+id/cardSetTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            tools:text="Card Set" />
 
-        <TextView
+        <!-- Oracle Text View -->
+        <local.ouphecollector.views.SymbolizedTextView
             android:id="@+id/cardTextTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            tools:text="Card Oracle Text" />
 
         <TextView
             android:id="@+id/cardPowerToughnessTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            tools:text="Power/Toughness" />
 
         <TextView
             android:id="@+id/cardFlavorTextView"
@@ -67,37 +78,35 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="serif-monospace"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            tools:text="Card Flavor Text" />
 
         <TextView
             android:id="@+id/cardColorsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            tools:text="Card Colors" />
 
         <TextView
             android:id="@+id/cardColorIdentityTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            tools:text="Card Color Identity" />
 
         <TextView
             android:id="@+id/cardLegalitiesTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            tools:text="Card Legalities" />
 
         <TextView
             android:id="@+id/cardArtistTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
-
-        <TextView
-            android:id="@+id/cardOracleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
-
+            android:layout_marginTop="8dp"
+            tools:text="Card Artist" />
     </LinearLayout>
 </ScrollView>

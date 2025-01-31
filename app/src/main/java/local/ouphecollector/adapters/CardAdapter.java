@@ -50,7 +50,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         } else {
             // Load a placeholder image if the card doesn't have an image
             Glide.with(holder.itemView.getContext())
-                    .load(R.drawable.placeholder)
+                    .load(R.drawable.no_image)
                     .into(holder.cardImageView);
         }
 

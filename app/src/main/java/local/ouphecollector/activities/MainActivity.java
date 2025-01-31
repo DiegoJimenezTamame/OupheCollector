@@ -15,6 +15,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import local.ouphecollector.R;
 import local.ouphecollector.databinding.ActivityMainBinding;
+import local.ouphecollector.views.SymbolManager;
 
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
@@ -24,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        SymbolManager.initialize(this);
+        setContentView(R.layout.activity_main);
         // View Binding setup
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

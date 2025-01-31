@@ -5,74 +5,98 @@ import androidx.room.TypeConverter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
+
 import local.ouphecollector.models.ImageUris;
 import local.ouphecollector.models.Legalities;
 import local.ouphecollector.models.RelatedCard;
 import local.ouphecollector.models.RelatedUris;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
 public class Converters {
-    private static final Gson gson = new Gson();
+    static Gson gson = new Gson();
 
-    // ImageUris
     @TypeConverter
-    public static String fromImageUris(ImageUris imageUris) {
-        return gson.toJson(imageUris);
+    public static List<String> stringToSomeObjectList(String data) {
+        if (data == null) {
+            return Collections.emptyList();
+        }
+
+        Type listType = new TypeToken<List<String>>() {}.getType();
+
+        return gson.fromJson(data, listType);
     }
 
     @TypeConverter
-    public static ImageUris toImageUris(String imageUrisString) {
-        Type type = new TypeToken<ImageUris>() {}.getType();
-        return gson.fromJson(imageUrisString, type);
-    }
-
-    // List<String>
-    @TypeConverter
-    public static String fromStringList(List<String> list) {
-        return gson.toJson(list);
+    public static String someObjectListToString(List<String> someObjects) {
+        return gson.toJson(someObjects);
     }
 
     @TypeConverter
-    public static List<String> toStringList(String listString) {
-        Type type = new TypeToken<List<String>>() {}.getType();
-        return gson.fromJson(listString, type);
-    }
+    public static List<RelatedCard> stringToRelatedCardList(String data) {
+        if (data == null) {
+            return Collections.emptyList();
+        }
 
-    // List<RelatedCard>
-    @TypeConverter
-    public static String fromRelatedCardList(List<RelatedCard> list) {
-        return gson.toJson(list);
-    }
+        Type listType = new TypeToken<List<RelatedCard>>() {}.getType();
 
-    @TypeConverter
-    public static List<RelatedCard> toRelatedCardList(String listString) {
-        Type type = new TypeToken<List<RelatedCard>>() {}.getType();
-        return gson.fromJson(listString, type);
-    }
-
-    // RelatedUris
-    @TypeConverter
-    public static String fromRelatedUris(RelatedUris relatedUris) {
-        return gson.toJson(relatedUris);
+        return gson.fromJson(data, listType);
     }
 
     @TypeConverter
-    public static RelatedUris toRelatedUris(String relatedUrisString) {
-        Type type = new TypeToken<RelatedUris>() {}.getType();
-        return gson.fromJson(relatedUrisString, type);
+    public static String relatedCardListToString(List<RelatedCard> relatedCards) {
+        return gson.toJson(relatedCards);
     }
 
-    // Legalities
     @TypeConverter
     public static String fromLegalities(Legalities legalities) {
+        if (legalities == null) {
+            return null;
+        }
         return gson.toJson(legalities);
     }
 
     @TypeConverter
     public static Legalities toLegalities(String legalitiesString) {
+        if (legalitiesString == null) {
+            return null;
+        }
         Type type = new TypeToken<Legalities>() {}.getType();
         return gson.fromJson(legalitiesString, type);
+    }
+
+    @TypeConverter
+    public static String fromImageUris(ImageUris imageUris) {
+        if (imageUris == null) {
+            return null;
+        }
+        return gson.toJson(imageUris);
+    }
+
+    @TypeConverter
+    public static ImageUris toImageUris(String imageUrisString) {
+        if (imageUrisString == null) {
+            return null;
+        }
+        Type type = new TypeToken<ImageUris>() {}.getType();
+        return gson.fromJson(imageUrisString, type);
+    }
+
+    @TypeConverter
+    public static String fromRelatedUris(RelatedUris relatedUris) {
+        if (relatedUris == null) {
+            return null;
+        }
+        return gson.toJson(relatedUris);
+    }
+
+    @TypeConverter
+    public static RelatedUris toRelatedUris(String relatedUrisString) {
+        if (relatedUrisString == null) {
+            return null;
+        }
+        Type type = new TypeToken<RelatedUris>() {}.getType();
+        return gson.fromJson(relatedUrisString, type);
     }
 }

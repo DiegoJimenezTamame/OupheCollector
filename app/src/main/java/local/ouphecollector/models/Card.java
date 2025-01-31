@@ -58,6 +58,8 @@ public class Card {
     @SerializedName("legalities")
     private Legalities legalities;
 
+
+
     @SerializedName("related_uris")
     private RelatedUris relatedUris;
 

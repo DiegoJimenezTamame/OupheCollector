@@ -1,7 +1,5 @@
 package local.ouphecollector.fragments;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,51 +10,52 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
 import local.ouphecollector.R;
 import local.ouphecollector.api.CardApiService;
+import local.ouphecollector.api.CardResponse;
 import local.ouphecollector.api.RetrofitClient;
 import local.ouphecollector.models.Card;
-import local.ouphecollector.viewmodels.CardViewModel;
+import local.ouphecollector.models.Legalities;
+import local.ouphecollector.models.RelatedCard;
+import local.ouphecollector.views.ManaCostView;
+import local.ouphecollector.views.SymbolizedTextView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import local.ouphecollector.models.RelatedCard;
-import local.ouphecollector.models.Legalities;
 
 
 
 public class CardDetailFragment extends Fragment {
     private TextView cardNameTextView;
-    private TextView cardManaCostTextView;
+    private ManaCostView cardManaCostView;
     private TextView cardTypeTextView;
     private TextView cardRarityTextView;
     private TextView cardSetTextView;
-    private TextView cardTextTextView;
+    private SymbolizedTextView cardTextTextView;
     private TextView cardPowerToughnessTextView;
     private ImageView cardImageView;
     private TextView cardFlavorTextView;
     private TextView cardColorsTextView;
     private TextView cardColorIdentityTextView;
     private TextView cardArtistTextView;
-    private TextView cardOracleTextView;
     private TextView cardLegalitiesTextView;
-    private CardViewModel cardViewModel;
+    private static final String TAG = "CardDetailFragment";
+
+
 
     @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_card_detail, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_card_detail, container, false); // Inflate the layout
 
         cardNameTextView = view.findViewById(R.id.cardNameTextView);
-        cardManaCostTextView = view.findViewById(R.id.cardManaCostTextView);
+        cardManaCostView = view.findViewById(R.id.cardManaCostView);
         cardTypeTextView = view.findViewById(R.id.cardTypeTextView);
         cardRarityTextView = view.findViewById(R.id.cardRarityTextView);
         cardSetTextView = view.findViewById(R.id.cardSetTextView);
@@ -67,20 +66,11 @@ public class CardDetailFragment extends Fragment {
         cardColorsTextView = view.findViewById(R.id.cardColorsTextView);
         cardColorIdentityTextView = view.findViewById(R.id.cardColorIdentityTextView);
         cardArtistTextView = view.findViewById(R.id.cardArtistTextView);
-        cardOracleTextView = view.findViewById(R.id.cardOracleTextView);
         cardLegalitiesTextView = view.findViewById(R.id.cardLegalitiesTextView);
 
-        // Get the arguments from the Bundle
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            String cardName = bundle.getString("cardName");
-            if (cardName != null && !cardName.isEmpty()) {
-                cardViewModel = new ViewModelProvider(this).get(CardViewModel.class);
-                fetchCardDetails(cardName);
-            } else {
-                Log.e("CardDetailFragment", "Card name is empty or null");
-            }
-        }
+        assert getArguments() != null;
+        String cardName = getArguments().getString("cardName");
+        fetchCardDetails(cardName); // Fetch card details
 
         return view;
     }
@@ -88,58 +78,54 @@ public class CardDetailFragment extends Fragment {
     private void fetchCardDetails(String cardName) {
         CardApiService apiService = RetrofitClient.getRetrofitInstance().create(CardApiService.class);
         Call<Card> call = apiService.getCardByName(cardName);
-        call.enqueue(new Callback<Card>() {
+        call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<Card> call, Response<Card> response) {
+            public void onResponse(@NonNull Call<Card> call, @NonNull Response<Card> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Card card = response.body();
                     updateUI(card);
                 } else {
-                    Log.e("CardDetailFragment", "Error fetching card details: " + response.message());
+                    Log.e(TAG, "Error fetching card details: " + response.message() + " " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<Card> call, Throwable t) {
-                Log.e("CardDetailFragment", "Error fetching card details", t);
+            public void onFailure(@NonNull Call<Card> call, @NonNull Throwable t) {
+                Log.e(TAG, "Error fetching card details", t);
             }
         });
     }
     private void showDifferentVersionsDialog(List<RelatedCard> relatedCards) {
         if (relatedCards == null || relatedCards.isEmpty()) {
-            // No related cards, so don't show the dialog
             return;
         }
-        String[] cardNames = new String[relatedCards.size()];
-        for (int i = 0; i < relatedCards.size(); i++) {
-            cardNames[i] = relatedCards.get(i).getName();
-        }
+        String[] cardNames = relatedCards.stream()
+                .map(RelatedCard::getName)
+                .toArray(String[]::new);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Different Versions")
-                .setItems(cardNames, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // The 'which' argument contains the index position
-                        // of the selected item
-                        String selectedCardName = cardNames[which];
-                        fetchCardDetails(selectedCardName);
-                    }
-                });
-        builder.create().show();
+        new AlertDialog.Builder(getContext())
+                .setTitle("Different Versions")
+                .setItems(cardNames, (dialog, which) -> fetchCardDetails(cardNames[which]))
+                .show();
     }
 
     private void updateUI(Card card) {
-        List<RelatedCard> relatedCards = card.getAllParts();
-        showDifferentVersionsDialog(relatedCards);
+        if (card == null) {
+            Log.e(TAG, "Card object is null");
+            return;
+        }
+        if (card.getAllParts() != null) {
+            showDifferentVersionsDialog(card.getAllParts());
+        }
         cardNameTextView.setText(card.getName());
-        cardManaCostTextView.setText(getString(R.string.mana_cost_format, card.getManaCost()));
+        cardManaCostView.setManaCost(card.getManaCost());
         cardTypeTextView.setText(getString(R.string.type_format, card.getTypeLine()));
         cardRarityTextView.setText(getString(R.string.rarity_format, card.getRarity()));
         cardSetTextView.setText(getString(R.string.set_format, card.getSet()));
-        cardTextTextView.setText(getString(R.string.card_text_format, card.getOracleText()));
+        cardTextTextView.setSymbolizedText(card.getOracleText());
 
         // Conditional display for Power/Toughness
-        if (card.getTypeLine().contains("Creature")) {
+        if (card.getTypeLine() != null && card.getTypeLine().contains("Creature")) {
             cardPowerToughnessTextView.setText(getString(R.string.power_toughness_format, card.getPower(), card.getToughness()));
             cardPowerToughnessTextView.setVisibility(View.VISIBLE);
         } else {
@@ -176,14 +162,6 @@ public class CardDetailFragment extends Fragment {
             cardArtistTextView.setVisibility(View.VISIBLE);
         } else {
             cardArtistTextView.setVisibility(View.GONE);
-        }
-
-        // Display Oracle Text
-        if (card.getOracleText() != null && !card.getOracleText().isEmpty()) {
-            cardOracleTextView.setText(getString(R.string.oracle_text_format, card.getOracleText()));
-            cardOracleTextView.setVisibility(View.VISIBLE);
-        } else {
-            cardOracleTextView.setVisibility(View.GONE);
         }
 
         // Display Legalities

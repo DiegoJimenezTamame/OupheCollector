@@ -195,4 +195,6 @@ public class Legalities {
     public void setPauperCommander(String pauperCommander) {
         this.pauperCommander = pauperCommander;
     }
+
+
 }
