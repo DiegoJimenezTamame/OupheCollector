@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace = "local.ouphecollector"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "local.ouphecollector"
-        minSdk = 29
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -42,6 +42,8 @@ android {
 
 dependencies {
 
+    implementation ("com.caverock:androidsvg-aar:1.4")
+
     //Android Core Dependencies
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
@@ -59,6 +61,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.6.0")
     implementation("androidx.navigation:navigation-ui-ktx:2.6.0")
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+    implementation("androidx.media3:media3-common:1.5.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
@@ -81,6 +84,9 @@ dependencies {
     //Image processing
     implementation ("com.google.mlkit:text-recognition:16.0.1")
     implementation ("com.github.bumptech.glide:glide:4.15.1")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    implementation("com.caverock:androidsvg-aar:1.4")
 
     //Camera X
     implementation ("androidx.camera:camera-core:1.4.1")

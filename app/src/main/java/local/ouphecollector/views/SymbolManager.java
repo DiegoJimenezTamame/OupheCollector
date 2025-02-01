@@ -2,7 +2,7 @@ package local.ouphecollector.views;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
@@ -10,76 +10,89 @@ import android.text.SpannableString;
 import android.text.style.ImageSpan;
 import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import local.ouphecollector.api.CardApiService;
+import local.ouphecollector.api.RetrofitClient;
+import local.ouphecollector.models.CardSymbol;
+import local.ouphecollector.models.CardSymbolList;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-import kotlinx.coroutines.CoroutineDispatcher;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.GlobalScope;
-import kotlinx.coroutines.BuildersKt;
-import kotlinx.coroutines.CoroutineStart;
-import kotlinx.coroutines.Job;
-import kotlin.Unit;
-import kotlin.coroutines.Continuation;
-import kotlin.coroutines.CoroutineContext;
-import kotlin.coroutines.EmptyCoroutineContext;
-import kotlin.jvm.functions.Function2;
+import androidx.annotation.NonNull;
 
 public class SymbolManager {
     private static final String TAG = "SymbolManager";
-    private static final Map<String, Drawable> symbolCache = new HashMap<>();
-    private static final String SYMBOL_PATTERN = "\\{([^}]+)\\}";
-    private static final String BASE_URL = "https://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=";
-    private static Context appContext;
-    private static final CoroutineDispatcher ioDispatcher = Dispatchers.getIO();
-    private static final CoroutineDispatcher mainDispatcher = Dispatchers.getMain();
+    private static Map<String, CardSymbol> symbolMap = new HashMap<>();
+    private static boolean isInitialized = false;
 
-    public static void initialize(Context context) {
-        appContext = context.getApplicationContext();
+    // Callback interface
+    public interface SymbolManagerCallback {
+        void onSymbolsLoaded();
     }
 
-    public interface SymbolLoadCallback {
-        void onSymbolLoaded(Drawable drawable);
-
-        void onSymbolLoadFailed(String symbol, Exception e);
-    }
-
-    public static void getManaSymbolDrawable(Context context, String symbol, SymbolLoadCallback callback) {
-        if (symbolCache.containsKey(symbol)) {
-            callback.onSymbolLoaded(symbolCache.get(symbol));
-            return;
+    public static void initialize(Context context, SymbolManagerCallback callback) {
+        Log.d(TAG, "initialize called");
+        if (!isInitialized) {
+            Log.d(TAG, "initialize isInitialized = false");
+            fetchSymbols(context, callback);
+            isInitialized = true;
+        } else {
+            Log.d(TAG, "SymbolManager already initialized");
+            callback.onSymbolsLoaded(); // Call the callback immediately if already initialized
         }
+    }
 
-        Job job = BuildersKt.launch(GlobalScope.INSTANCE, ioDispatcher, CoroutineStart.DEFAULT, (coroutineScope, continuation) -> {
-            String imageUrl = BASE_URL + symbol;
-            try {
-                InputStream inputStream = new URL(imageUrl).openStream();
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                Drawable drawable = new BitmapDrawable(context.getResources(), bitmap);
-                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                symbolCache.put(symbol, drawable);
-                BuildersKt.launch(GlobalScope.INSTANCE, mainDispatcher, CoroutineStart.DEFAULT, (coroutineScope1, continuation1) -> {
-                    callback.onSymbolLoaded(drawable);
-                    return Unit.INSTANCE;
-                });
-            } catch (IOException e) {
-                Log.e(TAG, "Error loading image for symbol: " + symbol, e);
-                BuildersKt.launch(GlobalScope.INSTANCE, mainDispatcher, CoroutineStart.DEFAULT, (coroutineScope1, continuation1) -> {
-                    callback.onSymbolLoadFailed(symbol, e);
-                    return Unit.INSTANCE;
-                });
+    private static void fetchSymbols(Context context, SymbolManagerCallback callback) {
+        Log.d(TAG, "fetchSymbols called");
+        CardApiService apiService = RetrofitClient.getRetrofitInstance().create(CardApiService.class);
+        Call<CardSymbolList> call = apiService.getCardSymbols();
+        Log.d(TAG, "fetchSymbols call created");
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<CardSymbolList> call, @NonNull Response<CardSymbolList> response) {
+                Log.d(TAG, "fetchSymbols onResponse called");
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "fetchSymbols onResponse isSuccessful");
+                    CardSymbolList symbolList = response.body();
+                    List<CardSymbol> symbols = symbolList.getData();
+                    for (CardSymbol symbol : symbols) {
+                        symbolMap.put(symbol.getSymbol(), symbol);
+                        Log.d(TAG, "Stored symbol: " + symbol.getSymbol() + ", SVG URI: " + symbol.getSvg_uri() + ", Placeholder URI: " + symbol.getLoose_variant());
+                    }
+                    Log.d(TAG, "Symbols fetched and stored successfully. Count: " + symbolMap.size());
+                    callback.onSymbolsLoaded(); // Call the callback when symbols are loaded
+                } else {
+                    Log.e(TAG, "Error fetching symbols: " + response.message());
+                }
             }
-            return Unit.INSTANCE;
+
+            @Override
+            public void onFailure(@NonNull Call<CardSymbolList> call, @NonNull Throwable t) {
+                Log.e(TAG, "Error fetching symbols", t);
+                Log.e(TAG, "Error fetching symbols: " + t.getMessage());
+            }
         });
     }
 
-    public static void replaceSymbolsWithImages(Context context, String text, final SymbolizedTextView.SymbolizedTextCallback callback) {
+    public static CardSymbol getSymbol(String symbol) {
+        Log.d(TAG, "getSymbol called for: " + symbol);
+        if (symbolMap.containsKey(symbol)) {
+            Log.d(TAG, "Symbol found: " + symbol + ", SVG URI: " + Objects.requireNonNull(symbolMap.get(symbol)).getSvg_uri());
+            return symbolMap.get(symbol);
+        } else {
+            Log.e(TAG, "Symbol not found: " + symbol);
+            return null;
+        }
+    }
+
+    public static void replaceSymbolsWithImages(Context context, String text, SymbolizedTextView.SymbolizedTextCallback callback) {
+        Log.d(TAG, "replaceSymbolsWithImages called for: " + text);
         if (text == null || text.isEmpty()) {
             callback.onSymbolizedTextReady(new SpannableString(""));
             return;
@@ -89,30 +102,28 @@ public class SymbolManager {
         Pattern pattern = Pattern.compile("\\{(.*?)\\}");
         Matcher matcher = pattern.matcher(text);
 
-        BuildersKt.launch(GlobalScope.INSTANCE, mainDispatcher, CoroutineStart.DEFAULT, (coroutineScope, continuation) -> {
-            while (matcher.find()) {
-                String symbol = matcher.group(1);
-                final int start = matcher.start();
-                final int end = matcher.end();
-                getManaSymbolDrawable(context, symbol, new SymbolLoadCallback() {
-                    @Override
-                    public void onSymbolLoaded(Drawable drawable) {
-                        if (drawable != null) {
-                            ImageSpan imageSpan = new ImageSpan(drawable);
-                            spannableString.setSpan(imageSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            callback.onSymbolizedTextReady(spannableString);
-                        }
-                    }
-
-                    @Override
-                    public void onSymbolLoadFailed(String symbol, Exception e) {
-                        Log.e(TAG, "Error loading symbol: " + symbol, e);
-                        callback.onSymbolizedTextReady(spannableString);
-                    }
-                });
+        while (matcher.find()) {
+            String symbol = matcher.group(1);
+            Log.d(TAG, "replaceSymbolsWithImages found symbol: " + symbol);
+            CardSymbol cardSymbol = getSymbol(symbol);
+            if (cardSymbol != null) {
+                Log.d(TAG, "replaceSymbolsWithImages symbol found: " + symbol + ", SVG URI: " + cardSymbol.getSvg_uri());
+                int start = matcher.start();
+                int end = matcher.end();
+                ManaSymbolView manaSymbolView = new ManaSymbolView(context);
+                manaSymbolView.setSymbol(symbol);
+                int width = 64;
+                int height = 64;
+                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bitmap);
+                manaSymbolView.layout(0, 0, width, height);
+                manaSymbolView.draw(canvas);
+                Drawable drawable = new BitmapDrawable(context.getResources(), bitmap);
+                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                ImageSpan imageSpan = new ImageSpan(drawable);
+                spannableString.setSpan(imageSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
-            callback.onSymbolizedTextReady(spannableString);
-            return Unit.INSTANCE;
-        });
+        }
+        callback.onSymbolizedTextReady(spannableString);
     }
 }
