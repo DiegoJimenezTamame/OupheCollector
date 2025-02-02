@@ -1,30 +1,28 @@
 package local.ouphecollector.views;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PictureDrawable;
+import android.net.Uri;
 import android.text.Spannable;
-import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import local.ouphecollector.models.CardSymbol;
 
-public class SymbolizedTextView extends androidx.appcompat.widget.AppCompatTextView {
+public class SymbolizedTextView extends AppCompatTextView {
     private static final String TAG = "SymbolizedTextView";
-
-    public interface SymbolizedTextCallback {
-        void onSymbolizedTextReady(SpannableString symbolizedText);
-    }
 
     public SymbolizedTextView(Context context) {
         super(context);
@@ -40,49 +38,46 @@ public class SymbolizedTextView extends androidx.appcompat.widget.AppCompatTextV
 
     public void setSymbolizedText(String text) {
         Log.d(TAG, "setSymbolizedText called for: " + text);
-        SymbolManager.replaceSymbolsWithImages(getContext(), text, symbolizedText -> {
-            Log.d(TAG, "SymbolizedTextReady called");
-            setText(symbolizedText);
-        });
-    }
-
-    public void setSymbolizedText(String text, SymbolizedTextCallback callback) {
-        Log.d(TAG, "setSymbolizedText called for: " + text);
-        SymbolManager.initialize(getContext(), () -> {
-            Log.d(TAG, "onSymbolsLoaded called");
-            SymbolManager.replaceSymbolsWithImages(getContext(), text, callback);
-        });
-    }
-
-    public static void replaceSymbolWithImage(Context context, SpannableString spannableString, int start, int end, CardSymbol cardSymbol) {
-        Log.d(TAG, "replaceSymbolWithImage called for: " + cardSymbol.getSymbol());
-        if (cardSymbol.getSvg_uri() == null) {
-            Log.e(TAG, "replaceSymbolWithImage svg_uri is null");
+        if (text == null || text.isEmpty()) {
+            setText("");
             return;
         }
-        Glide.with(context)
-                .asBitmap()
-                .load(cardSymbol.getSvg_uri())
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        Log.d(TAG, "onResourceReady called for: " + cardSymbol.getSymbol());
-                        Drawable drawable = new BitmapDrawable(context.getResources(), resource);
-                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                        ImageSpan imageSpan = new ImageSpan(drawable);
-                        spannableString.setSpan(imageSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
+        replaceSymbolsWithImages(text);
+    }
 
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                        Log.d(TAG, "onLoadCleared called for: " + cardSymbol.getSymbol());
+    private void replaceSymbolsWithImages(String text) {
+        Log.d(TAG, "replaceSymbolsWithImages called for: " + text);
+        SpannableStringBuilder builder = new SpannableStringBuilder(text);
+        Pattern pattern = Pattern.compile("\\{(.*?)\\}");
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            String symbol = matcher.group(1);
+            CardSymbol cardSymbol = SymbolManager.getInstance().getSymbol(symbol);
+            if (cardSymbol != null) {
+                String svgUri = cardSymbol.getSvg_uri();
+                if (svgUri != null) {
+                    RequestBuilder<PictureDrawable> requestBuilder = Glide.with(this.getContext())
+                            .as(PictureDrawable.class)
+                            .transition(DrawableTransitionOptions.withCrossFade());
+                    try {
+                        PictureDrawable pictureDrawable = requestBuilder.load(Uri.parse(svgUri)).submit().get();
+                        pictureDrawable.setBounds(0, 0, pictureDrawable.getIntrinsicWidth(), pictureDrawable.getIntrinsicHeight());
+                        ImageSpan imageSpan = new ImageSpan(pictureDrawable);
+                        builder.setSpan(imageSpan, matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } catch (ExecutionException e) {
+                        Log.e(TAG, "ExecutionException while loading image for symbol: " + symbol, e);
+                    } catch (InterruptedException e) {
+                        Log.e(TAG, "InterruptedException while loading image for symbol: " + symbol, e);
+                        Thread.currentThread().interrupt();
                     }
-
-                    @Override
-                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                        Log.e(TAG, "onLoadFailed called for: " + cardSymbol.getSymbol());
-                        super.onLoadFailed(errorDrawable);
-                    }
-                });
+                } else {
+                    Log.e(TAG, "svgUri is null for symbol: " + symbol);
+                }
+            } else {
+                Log.e(TAG, "Symbol not found: " + symbol);
+            }
+        }
+        setText(builder);
+        Log.d(TAG, "SymbolizedTextReady called");
     }
 }

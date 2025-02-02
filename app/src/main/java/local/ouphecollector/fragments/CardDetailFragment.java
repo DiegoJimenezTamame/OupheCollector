@@ -1,6 +1,5 @@
 package local.ouphecollector.fragments;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -24,14 +24,13 @@ import local.ouphecollector.models.Card;
 import local.ouphecollector.models.Legalities;
 import local.ouphecollector.models.RelatedCard;
 import local.ouphecollector.views.ManaCostView;
+import local.ouphecollector.views.SymbolManager;
 import local.ouphecollector.views.SymbolizedTextView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-
-public class CardDetailFragment extends Fragment {
+public class CardDetailFragment extends Fragment implements SymbolManager.SymbolManagerCallback {
     private TextView cardNameTextView;
     private ManaCostView cardManaCostView;
     private TextView cardTypeTextView;
@@ -46,12 +45,12 @@ public class CardDetailFragment extends Fragment {
     private TextView cardArtistTextView;
     private TextView cardLegalitiesTextView;
     private static final String TAG = "CardDetailFragment";
-
-
+    private Card cardToUpdate;
 
     @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_card_detail, container, false); // Inflate the layout
+        View view = inflater.inflate(R.layout.fragment_card_detail, container, false);
 
         cardNameTextView = view.findViewById(R.id.cardNameTextView);
         cardManaCostView = view.findViewById(R.id.cardManaCostView);
@@ -69,7 +68,7 @@ public class CardDetailFragment extends Fragment {
 
         assert getArguments() != null;
         String cardName = getArguments().getString("cardName");
-        fetchCardDetails(cardName); // Fetch card details
+        fetchCardDetails(cardName);
 
         return view;
     }
@@ -81,8 +80,13 @@ public class CardDetailFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<Card> call, @NonNull Response<Card> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Card card = response.body();
-                    updateUI(card);
+                    cardToUpdate = response.body();
+                    if (SymbolManager.getInstance().isInitialized()) {
+                        updateUI(cardToUpdate);
+                    } else {
+                        Log.d(TAG, "Symbols not loaded yet, waiting for callback");
+                        SymbolManager.getInstance().addCallback(CardDetailFragment.this);
+                    }
                 } else {
                     Log.e(TAG, "Error fetching card details: " + response.message() + " " + response.code());
                 }
@@ -94,6 +98,7 @@ public class CardDetailFragment extends Fragment {
             }
         });
     }
+
     private void showDifferentVersionsDialog(List<RelatedCard> relatedCards) {
         if (relatedCards == null || relatedCards.isEmpty()) {
             return;
@@ -102,7 +107,7 @@ public class CardDetailFragment extends Fragment {
                 .map(RelatedCard::getName)
                 .toArray(String[]::new);
 
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(requireContext())
                 .setTitle("Different Versions")
                 .setItems(cardNames, (dialog, which) -> fetchCardDetails(cardNames[which]))
                 .show();
@@ -196,6 +201,14 @@ public class CardDetailFragment extends Fragment {
             Glide.with(this)
                     .load(card.getImageUris().getNormal())
                     .into(cardImageView);
+        }
+    }
+
+    @Override
+    public void onSymbolsLoaded() {
+        Log.d(TAG, "onSymbolsLoaded called");
+        if (cardToUpdate != null) {
+            updateUI(cardToUpdate);
         }
     }
 }

@@ -1,8 +1,8 @@
 package local.ouphecollector.activities;
 
 import android.os.Bundle;
-import android.view.Menu;
 import android.util.Log;
+import android.view.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,9 +16,8 @@ import com.google.android.material.navigation.NavigationView;
 
 import local.ouphecollector.R;
 import local.ouphecollector.databinding.ActivityMainBinding;
-import local.ouphecollector.views.SymbolManager;
 
-public class MainActivity extends AppCompatActivity implements SymbolManager.SymbolManagerCallback {
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private NavController navController;
@@ -29,20 +28,10 @@ public class MainActivity extends AppCompatActivity implements SymbolManager.Sym
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate called");
-
         // View Binding setup
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Initialize SymbolManager
-        SymbolManager.initialize(this, this);
-    }
-
-    @Override
-    public void onSymbolsLoaded() {
-        Log.d(TAG, "onSymbolsLoaded called");
-        boolean symbolsLoaded = true;
-        Log.d(TAG, "onSymbolsLoaded onPostExecute called");
         // Set up the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
