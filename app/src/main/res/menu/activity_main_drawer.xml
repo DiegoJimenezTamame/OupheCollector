@@ -6,38 +6,24 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:name="local.ouphecollector.fragments.HomeFragment"
-            android:icon="@drawable/home_icon"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_collection"
-            android:name="local.ouphecollector.fragments.CollectionFragment"
-            android:icon="@drawable/collection_icon"
             android:title="@string/menu_collection" />
         <item
             android:id="@+id/nav_scanner"
-            android:name="local.ouphecollector.fragments.ScannerFragment"
-            android:icon="@drawable/scanner_icon"
             android:title="@string/menu_scanner" />
         <item
             android:id="@+id/nav_decklist"
-            android:name="local.ouphecollector.fragments.DeckFragment"
-            android:icon="@drawable/decklist_icon"
             android:title="@string/menu_decklist" />
         <item
             android:id="@+id/nav_wishlist"
-            android:name="local.ouphecollector.fragments.WishlistFragment"
-            android:icon="@drawable/shopping_cart_icon"
             android:title="@string/menu_wishlist" />
         <item
             android:id="@+id/nav_profile"
-            android:name="local.ouphecollector.fragments.ProfileFragment"
-            android:icon="@drawable/profile_icon"
             android:title="@string/menu_profile" />
         <item
             android:id="@+id/nav_search"
-            android:name="local.ouphecollector.fragments.SearchFragment"
-            android:icon="@drawable/search_icon"
             android:title="@string/menu_search" />
     </group>
 </menu>

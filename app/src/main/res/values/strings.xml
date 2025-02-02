@@ -1,55 +1,59 @@
 <resources>
-    <string name="app_name">Ouphe_Collector</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="action_settings">Settings</string>
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_collection">Collection</string>
-    <string name="menu_scanner">Scanner</string>
-    <string name="menu_decklist">Decklists</string>
-    <string name="menu_wishlist">Wishlist</string>
-    <string name="menu_profile">Profile</string>
-    <string name="nav_header_title">MTG Collector</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="collection">Collection</string>
-    <string name="scanner">Scanner</string>
-    <string name="deck">Deck</string>
-    <string name="wishlist">Wishlist</string>
-    <string name="profile">Profile</string>
-    <string name="ouphe_collector">Ouphe Collector</string>
-    <string name="action_search">search</string>
-    <string name="card_id">Card ID</string>
-    <string name="quantity">Quantity</string>
-    <string name="username">Username</string>
-    <string name="email">Email</string>
-    <string name="new_username">New Username</string>
-    <string name="new_email">New Email</string>
-    <string name="create_profile">Create Profile</string>
-    <string name="profile_created">Profile created successfully!</string>
-    <string name="card_name">Card Name</string>
-    <string name="menu_search">Search</string>
-    <string name="advanced_search">Advanced Search</string>
+    <string name="app_name" translatable="false">Ouphe_Collector</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    <string name="menu_home" translatable="false">Home</string>
+    <string name="menu_gallery" translatable="false">Gallery</string>
+    <string name="menu_slideshow" translatable="false">Slideshow</string>
+    <string name="menu_collection" translatable="false">Collection</string>
+    <string name="menu_scanner" translatable="false">Scanner</string>
+    <string name="menu_decklist" translatable="false">Decklists</string>
+    <string name="menu_wishlist" translatable="false">Wishlist</string>
+    <string name="menu_profile" translatable="false">Profile</string>
+    <string name="nav_header_title" translatable="false">MTG Collector</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+    <string name="collection" translatable="false">Collection</string>
+    <string name="scanner" translatable="false">Scanner</string>
+    <string name="deck" translatable="false">Deck</string>
+    <string name="wishlist" translatable="false">Wishlist</string>
+    <string name="profile" translatable="false">Profile</string>
+    <string name="ouphe_collector" translatable="false">Ouphe Collector</string>
+    <string name="action_search" translatable="false">search</string>
+    <string name="card_id" translatable="false">Card ID</string>
+    <string name="quantity" translatable="false">Quantity</string>
+    <string name="username" translatable="false">Username</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="new_username" translatable="false">New Username</string>
+    <string name="new_email" translatable="false">New Email</string>
+    <string name="create_profile" translatable="false">Create Profile</string>
+    <string name="profile_created" translatable="false">Profile created successfully!</string>
+    <string name="card_name" translatable="false">Card Name</string>
+    <string name="menu_search" translatable="false">Search</string>
+    <string name="advanced_search" translatable="false">Advanced Search</string>
 
-    <string name="card_name_textview">Card Name</string>
-    <string name="mana_cost">Mana Cost</string>
-    <string name="type">Type</string>
-    <string name="rarity">Rarity</string>
-    <string name="set">Set</string>
-    <string name="card_text">Card Text</string>
-    <string name="power_toughness">Power/Toughness</string>
-    <string name="menu_card_detail">Card Detail</string>
+    <string name="card_name_textview" translatable="false">Card Name</string>
+    <string name="mana_cost" translatable="false">Mana Cost</string>
+    <string name="type" translatable="false">Type</string>
+    <string name="rarity" translatable="false">Rarity</string>
+    <string name="set" translatable="false">Set</string>
+    <string name="card_text" translatable="false">Card Text</string>
+    <string name="power_toughness" translatable="false">Power/Toughness</string>
+    <string name="menu_card_detail" translatable="false">Card Detail</string>
 
-    <string name="type_format">Type: %1$s</string>
-    <string name="rarity_format">Rarity: %1$s</string>
-    <string name="set_format">Set: %1$s</string>
-    <string name="power_toughness_format">Power/Toughness: %1$s/%2$s</string>
-    <string name="card_image">card image</string>
-    <string name="flavor_text_format">%s</string>
-    <string name="colors_format">Colors: %s</string>
-    <string name="color_identity_format">Color Identity: %s</string>
-    <string name="artist_format">Artist: %s</string>
+    <string name="type_format" translatable="false">Type: %1$s</string>
+    <string name="rarity_format" translatable="false">Rarity: %1$s</string>
+    <string name="set_format" translatable="false">Set: %1$s</string>
+    <string name="power_toughness_format" translatable="false">Power/Toughness: %1$s/%2$s</string>
+    <string name="card_image" translatable="false">card image</string>
+    <string name="flavor_text_format" translatable="false">%s</string>
+    <string name="colors_format" translatable="false">Colors: %s</string>
+    <string name="color_identity_format" translatable="false">Color Identity: %s</string>
+    <string name="artist_format" translatable="false">Artist: %s</string>
+    <string name="home" translatable="false">home</string>
+    <string name="search_for_cards" translatable="false">search for cards</string>
+
+
 
 </resources>

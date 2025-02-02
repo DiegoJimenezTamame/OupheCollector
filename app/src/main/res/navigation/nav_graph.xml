@@ -15,7 +15,11 @@
         android:id="@+id/nav_collection"
         android:name="local.ouphecollector.fragments.CollectionFragment"
         android:label="@string/menu_collection"
-        tools:layout="@layout/fragment_collection" />
+        tools:layout="@layout/fragment_collection">
+        <action
+            android:id="@+id/action_nav_collection_to_nav_scanner"
+            app:destination="@id/nav_scanner" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_decklist"
@@ -43,6 +47,9 @@
         <action
             android:id="@+id/action_nav_search_to_nav_cardDetail"
             app:destination="@id/nav_cardDetail" />
+        <action
+            android:id="@+id/action_nav_search_to_nav_scanner"
+            app:destination="@id/nav_scanner" />
     </fragment>
 
     <fragment
@@ -54,4 +61,10 @@
             android:name="cardName"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_scanner"
+        android:name="local.ouphecollector.fragments.ScannerFragment"
+        android:label="@string/menu_scanner"
+        tools:layout="@layout/fragment_scanner" />
 </navigation>
