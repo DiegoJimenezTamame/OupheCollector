@@ -5,6 +5,7 @@ import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.View.MeasureSpec;
 
 import androidx.annotation.NonNull;
 
@@ -37,13 +38,19 @@ public class ViewDrawable extends Drawable {
 
     @Override
     public int getIntrinsicWidth() {
-        view.measure(0, 0);
+        // Use MeasureSpec to create a measurement specification
+        int widthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        int heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        view.measure(widthMeasureSpec, heightMeasureSpec);
         return view.getMeasuredWidth();
     }
 
     @Override
     public int getIntrinsicHeight() {
-        view.measure(0, 0);
+        // Use MeasureSpec to create a measurement specification
+        int widthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        int heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        view.measure(widthMeasureSpec, heightMeasureSpec);
         return view.getMeasuredHeight();
     }
 

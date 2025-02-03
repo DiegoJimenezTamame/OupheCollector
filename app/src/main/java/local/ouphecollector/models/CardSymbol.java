@@ -1,7 +1,10 @@
 package local.ouphecollector.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class CardSymbol {
     private String symbol;
+    @SerializedName("svg_uri")
     private String svg_uri;
 
     public CardSymbol() {

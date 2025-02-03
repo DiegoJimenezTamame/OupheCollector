@@ -1,18 +1,11 @@
 package local.ouphecollector.views;
 
 import android.content.Context;
-import android.graphics.drawable.PictureDrawable;
-import android.net.Uri;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-
-import local.ouphecollector.models.CardSymbol;
 
 public class ManaSymbolView extends androidx.appcompat.widget.AppCompatImageView {
     private static final String TAG = "ManaSymbolView";
@@ -38,19 +31,21 @@ public class ManaSymbolView extends androidx.appcompat.widget.AppCompatImageView
 
     private void loadSymbol() {
         Log.d(TAG, "loadSymbol called for: " + symbol);
-        CardSymbol cardSymbol = SymbolManager.getInstance().getSymbol(symbol);
-        if (cardSymbol != null) {
-            String svgUri = cardSymbol.getSvg_uri();
-            if (svgUri != null) {
-                RequestBuilder<PictureDrawable> requestBuilder = Glide.with(this.getContext())
-                        .as(PictureDrawable.class)
-                        .transition(DrawableTransitionOptions.withCrossFade());
-                requestBuilder.load(Uri.parse(svgUri)).into(this);
-            } else {
-                Log.e(TAG, "svgUri is null for symbol: " + symbol);
+        SymbolManager.SymbolManagerCallback callback = new SymbolManager.SymbolManagerCallback() {
+            @Override
+            public void onSymbolsLoaded() {
+                Drawable drawable = SymbolManager.getInstance(getContext()).getSymbol(symbol);
+                if (drawable != null) {
+                    setImageDrawable(drawable);
+                } else {
+                    Log.e(TAG, "Symbol not found: " + symbol);
+                }
             }
+        };
+        if (!SymbolManager.getInstance(getContext()).isInitialized()) {
+            SymbolManager.getInstance(getContext()).addCallback(callback);
         } else {
-            Log.e(TAG, "Symbol not found: " + symbol);
+            callback.onSymbolsLoaded();
         }
     }
 }

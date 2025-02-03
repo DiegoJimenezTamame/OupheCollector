@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -82,7 +83,7 @@ public class SearchFragment extends Fragment {
     private void fetchCards(String cardName) {
         Log.d(TAG, "fetchCards called with cardName: " + cardName);
         CardApiService apiService = RetrofitClient.getRetrofitInstance().create(CardApiService.class);
-        Call<CardList> call = apiService.searchCardsByName(cardName);
+        Call<CardList> call = apiService.searchCardsByName(cardName); // Corrected line
         call.enqueue(new Callback<>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override

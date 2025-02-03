@@ -46,6 +46,15 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
     private TextView cardLegalitiesTextView;
     private static final String TAG = "CardDetailFragment";
     private Card cardToUpdate;
+    private static final String ARG_CARD_NAME = "cardName";
+
+    public static CardDetailFragment newInstance(String cardName) {
+        CardDetailFragment fragment = new CardDetailFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_CARD_NAME, cardName);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -66,9 +75,10 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
         cardArtistTextView = view.findViewById(R.id.cardArtistTextView);
         cardLegalitiesTextView = view.findViewById(R.id.cardLegalitiesTextView);
 
-        assert getArguments() != null;
-        String cardName = getArguments().getString("cardName");
-        fetchCardDetails(cardName);
+        if (getArguments() != null) {
+            String cardName = getArguments().getString(ARG_CARD_NAME);
+            fetchCardDetails(cardName);
+        }
 
         return view;
     }
@@ -81,11 +91,11 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
             public void onResponse(@NonNull Call<Card> call, @NonNull Response<Card> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     cardToUpdate = response.body();
-                    if (SymbolManager.getInstance().isInitialized()) {
+                    if (SymbolManager.getInstance(getContext()).isInitialized()) {
                         updateUI(cardToUpdate);
                     } else {
                         Log.d(TAG, "Symbols not loaded yet, waiting for callback");
-                        SymbolManager.getInstance().addCallback(CardDetailFragment.this);
+                        SymbolManager.getInstance(getContext()).addCallback(CardDetailFragment.this);
                     }
                 } else {
                     Log.e(TAG, "Error fetching card details: " + response.message() + " " + response.code());
@@ -112,8 +122,8 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
                 .setItems(cardNames, (dialog, which) -> fetchCardDetails(cardNames[which]))
                 .show();
     }
-
     private void updateUI(Card card) {
+
         if (card == null) {
             Log.e(TAG, "Card object is null");
             return;
@@ -122,7 +132,9 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
             showDifferentVersionsDialog(card.getAllParts());
         }
         cardNameTextView.setText(card.getName());
+        Log.d(TAG, "Card name set: " + card.getName());
         cardManaCostView.setManaCost(card.getManaCost());
+        Log.d(TAG, "Card mana cost set: " + card.getManaCost());
         cardTypeTextView.setText(getString(R.string.type_format, card.getTypeLine()));
         cardRarityTextView.setText(getString(R.string.rarity_format, card.getRarity()));
         cardSetTextView.setText(getString(R.string.set_format, card.getSet()));
