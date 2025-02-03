@@ -5,7 +5,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,12 +18,15 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import local.ouphecollector.R;
 import local.ouphecollector.api.CardApiService;
 import local.ouphecollector.api.RetrofitClient;
 import local.ouphecollector.models.Card;
+import local.ouphecollector.models.CardList;
 import local.ouphecollector.models.Legalities;
 import local.ouphecollector.models.RelatedCard;
 import local.ouphecollector.views.ManaCostView;
@@ -44,9 +50,11 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
     private TextView cardColorIdentityTextView;
     private TextView cardArtistTextView;
     private TextView cardLegalitiesTextView;
+    private Spinner setSpinner;
     private static final String TAG = "CardDetailFragment";
-    private Card cardToUpdate;
+    private Card currentCard;
     private static final String ARG_CARD_NAME = "cardName";
+    private List<Card> cardPrintings;
 
     public static CardDetailFragment newInstance(String cardName) {
         CardDetailFragment fragment = new CardDetailFragment();
@@ -74,6 +82,7 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
         cardColorIdentityTextView = view.findViewById(R.id.cardColorIdentityTextView);
         cardArtistTextView = view.findViewById(R.id.cardArtistTextView);
         cardLegalitiesTextView = view.findViewById(R.id.cardLegalitiesTextView);
+        setSpinner = view.findViewById(R.id.setSpinner);
 
         if (getArguments() != null) {
             String cardName = getArguments().getString(ARG_CARD_NAME);
@@ -90,9 +99,10 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
             @Override
             public void onResponse(@NonNull Call<Card> call, @NonNull Response<Card> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    cardToUpdate = response.body();
+                    currentCard = response.body();
                     if (SymbolManager.getInstance(getContext()).isInitialized()) {
-                        updateUI(cardToUpdate);
+                        updateUI(currentCard);
+                        fetchCardPrintings(currentCard);
                     } else {
                         Log.d(TAG, "Symbols not loaded yet, waiting for callback");
                         SymbolManager.getInstance(getContext()).addCallback(CardDetailFragment.this);
@@ -105,6 +115,57 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
             @Override
             public void onFailure(@NonNull Call<Card> call, @NonNull Throwable t) {
                 Log.e(TAG, "Error fetching card details", t);
+            }
+        });
+    }
+
+    private void fetchCardPrintings(Card card) {
+        if (card.getPrintsSearchUri() == null || card.getPrintsSearchUri().isEmpty()) {
+            Log.e(TAG, "Prints search URI is null or empty");
+            return;
+        }
+        CardApiService apiService = RetrofitClient.getRetrofitInstance().create(CardApiService.class);
+        Call<CardList> call = apiService.getCardPrintings(card.getPrintsSearchUri());
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<CardList> call, @NonNull Response<CardList> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    cardPrintings = response.body().getData();
+                    populateSetSpinner(cardPrintings);
+                } else {
+                    Log.e(TAG, "Error fetching card printings: " + response.message() + " " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<CardList> call, @NonNull Throwable t) {
+                Log.e(TAG, "Error fetching card printings", t);
+            }
+        });
+    }
+
+    private void populateSetSpinner(List<Card> printings) {
+        if (printings == null || printings.isEmpty()) {
+            Log.e(TAG, "No card printings found");
+            return;
+        }
+        List<String> setNames = new ArrayList<>();
+        for (Card printing : printings) {
+            setNames.add(printing.getSet());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, setNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        setSpinner.setAdapter(adapter);
+        setSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Card selectedPrinting = printings.get(position);
+                updateUI(selectedPrinting);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
             }
         });
     }
@@ -219,8 +280,8 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
     @Override
     public void onSymbolsLoaded() {
         Log.d(TAG, "onSymbolsLoaded called");
-        if (cardToUpdate != null) {
-            updateUI(cardToUpdate);
+        if (currentCard != null) {
+            updateUI(currentCard);
         }
     }
 }

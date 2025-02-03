@@ -31,6 +31,13 @@
             android:textStyle="bold"
             tools:text="Card Name" />
 
+        <!-- Spinner for Set Selection -->
+        <Spinner
+            android:id="@+id/setSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
         <!-- Mana Cost View -->
         <local.ouphecollector.views.ManaCostView
             android:id="@+id/cardManaCostView"

@@ -58,16 +58,24 @@ public class Card {
     @SerializedName("legalities")
     private Legalities legalities;
 
-
-
     @SerializedName("related_uris")
     private RelatedUris relatedUris;
 
     @SerializedName("all_parts")
     private List<RelatedCard> allParts;
 
+    @SerializedName("prints_search_uri")
+    private String printsSearchUri;
 
     // --- Getters and Setters ---
+
+    public String getPrintsSearchUri() {
+        return printsSearchUri;
+    }
+
+    public void setPrintsSearchUri(String printsSearchUri) {
+        this.printsSearchUri = printsSearchUri;
+    }
 
     public List<RelatedCard> getAllParts() {
         return allParts;

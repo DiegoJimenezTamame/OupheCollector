@@ -21,4 +21,7 @@ public interface CardApiService {
 
     @GET
     Call<ResponseBody> getSvg(@Url String url);
+
+    @GET
+    Call<CardList> getCardPrintings(@Url String url);
 }
