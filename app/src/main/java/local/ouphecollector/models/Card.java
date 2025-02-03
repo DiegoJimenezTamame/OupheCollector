@@ -1,20 +1,25 @@
 package local.ouphecollector.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-public class Card {
+public class Card implements Parcelable {
 
     @PrimaryKey
     @NonNull
     @SerializedName("id")
-    public String id ="";
+    public String id = "";
 
     @SerializedName("name")
     private String name;
@@ -214,4 +219,89 @@ public class Card {
         this.relatedUris = relatedUris;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.manaCost);
+        dest.writeString(this.typeLine);
+        dest.writeString(this.oracleText);
+        dest.writeString(this.power);
+        dest.writeString(this.toughness);
+        dest.writeStringList(this.colors);
+        dest.writeStringList(this.colorIdentity);
+        dest.writeString(this.artist);
+        dest.writeString(this.rarity);
+        dest.writeString(this.set);
+        dest.writeString(this.flavorText);
+        dest.writeParcelable(this.imageUris, flags);
+        dest.writeParcelable(this.legalities, flags);
+        dest.writeParcelable(this.relatedUris, flags);
+        dest.writeList(this.allParts);
+        dest.writeString(this.printsSearchUri);
+    }
+
+    public void readFromParcel(Parcel source) {
+        this.id = Objects.requireNonNull(source.readString());
+        this.name = source.readString();
+        this.manaCost = source.readString();
+        this.typeLine = source.readString();
+        this.oracleText = source.readString();
+        this.power = source.readString();
+        this.toughness = source.readString();
+        this.colors = source.createStringArrayList();
+        this.colorIdentity = source.createStringArrayList();
+        this.artist = source.readString();
+        this.rarity = source.readString();
+        this.set = source.readString();
+        this.flavorText = source.readString();
+        this.imageUris = source.readParcelable(ImageUris.class.getClassLoader());
+        this.legalities = source.readParcelable(Legalities.class.getClassLoader());
+        this.relatedUris = source.readParcelable(RelatedUris.class.getClassLoader());
+        this.allParts = new ArrayList<>();
+        source.readList(this.allParts, RelatedCard.class.getClassLoader());
+        this.printsSearchUri = source.readString();
+    }
+
+    public Card() {
+    }
+
+    protected Card(Parcel in) {
+        this.id = Objects.requireNonNull(in.readString());
+        this.name = in.readString();
+        this.manaCost = in.readString();
+        this.typeLine = in.readString();
+        this.oracleText = in.readString();
+        this.power = in.readString();
+        this.toughness = in.readString();
+        this.colors = in.createStringArrayList();
+        this.colorIdentity = in.createStringArrayList();
+        this.artist = in.readString();
+        this.rarity = in.readString();
+        this.set = in.readString();
+        this.flavorText = in.readString();
+        this.imageUris = in.readParcelable(ImageUris.class.getClassLoader());
+        this.legalities = in.readParcelable(Legalities.class.getClassLoader());
+        this.relatedUris = in.readParcelable(RelatedUris.class.getClassLoader());
+        this.allParts = new ArrayList<>();
+        in.readList(this.allParts, RelatedCard.class.getClassLoader());
+        this.printsSearchUri = in.readString();
+    }
+
+    public static final Parcelable.Creator<Card> CREATOR = new Parcelable.Creator<>() {
+        @Override
+        public Card createFromParcel(Parcel source) {
+            return new Card(source);
+        }
+
+        @Override
+        public Card[] newArray(int size) {
+            return new Card[size];
+        }
+    };
 }

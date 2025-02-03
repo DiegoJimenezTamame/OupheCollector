@@ -1,6 +1,7 @@
 package local.ouphecollector.fragments;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +16,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import local.ouphecollector.R;
 import local.ouphecollector.api.CardApiService;
@@ -55,6 +56,8 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
     private Card currentCard;
     private static final String ARG_CARD_NAME = "cardName";
     private List<Card> cardPrintings;
+    private static final String SHOW_ALL_PRINTINGS = "Show all Printings";
+    private List<Card> limitedPrintings;
 
     public static CardDetailFragment newInstance(String cardName) {
         CardDetailFragment fragment = new CardDetailFragment();
@@ -150,8 +153,15 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
             return;
         }
         List<String> setNames = new ArrayList<>();
-        for (Card printing : printings) {
+        limitedPrintings = new ArrayList<>();
+        int maxPrintings = Math.min(3, printings.size());
+        for (int i = 0; i < maxPrintings; i++) {
+            Card printing = printings.get(i);
             setNames.add(printing.getSet());
+            limitedPrintings.add(printing);
+        }
+        if (printings.size() > 3) {
+            setNames.add(SHOW_ALL_PRINTINGS);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, setNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -159,8 +169,16 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
         setSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Card selectedPrinting = printings.get(position);
-                updateUI(selectedPrinting);
+                if (setNames.get(position).equals(SHOW_ALL_PRINTINGS)) {
+                    // Navigate to the new fragment to show all printings
+                    Bundle bundle = new Bundle();
+                    ArrayList<? extends Parcelable> parcelablePrintings = new ArrayList<>(printings);
+                    bundle.putParcelableArrayList("allPrintings", parcelablePrintings);
+                    Navigation.findNavController(view).navigate(R.id.action_cardDetailFragment_to_allPrintingsFragment, bundle);
+                } else {
+                    Card selectedPrinting = limitedPrintings.get(position);
+                    updateUI(selectedPrinting);
+                }
             }
 
             @Override

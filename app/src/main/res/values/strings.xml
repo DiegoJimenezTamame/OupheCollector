@@ -54,6 +54,7 @@
     <string name="home" translatable="false">home</string>
     <string name="search_for_cards" translatable="false">search for cards</string>
 
+    <string name="card_printing_image" translatable="false">Card Printing Image</string>
 
 
 </resources>
