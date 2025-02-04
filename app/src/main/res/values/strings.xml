@@ -55,6 +55,31 @@
     <string name="search_for_cards" translatable="false">search for cards</string>
 
     <string name="card_printing_image" translatable="false">Card Printing Image</string>
+    <string name="recent_searches" translatable="false">Recent Searches</string>
+    <string name="show_more" translatable="false">Show More</string>
+    <string name="error_message" translatable="false">An error occurred.</string>
+    <string name="error_loading_data" translatable="false">Failed to load data.</string>
+    <string name="no_results_found" translatable="false">No results found.</string>
 
 
+
+    <!-- <string name="app_name">Ouphe Collector</string> -->
+
+    <!-- <string name="card_image">Card Image</string> -->
+
+    <!-- <string name="type_format">Type: %1$s</string> -->
+
+    <!-- <string name="rarity_format">Rarity: %1$s</string> -->
+
+    <!-- <string name="set_format">Set: %1$s</string> -->
+
+    <!-- <string name="power_toughness_format">%1$s/%2$s</string> -->
+
+    <!-- <string name="flavor_text_format">"%1$s"</string> -->
+
+    <!-- <string name="colors_format">Colors: %1$s</string> -->
+
+    <!-- <string name="color_identity_format">Color Identity: %1$s</string> -->
+
+    <!-- <string name="artist_format">Artist: %1$s</string> -->
 </resources>

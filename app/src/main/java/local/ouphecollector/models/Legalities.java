@@ -45,6 +45,40 @@ public class Legalities implements Parcelable {
     @SerializedName("premodern")
     private String premodern;
 
+    public String getOathbreaker() {
+        return oathbreaker;
+    }
+
+    public void setOathbreaker(String oathbreaker) {
+        this.oathbreaker = oathbreaker;
+    }
+
+    public String getPredh() {
+        return predh;
+    }
+
+    public void setPredh(String predh) {
+        this.predh = predh;
+    }
+
+    public String getPredh2() {
+        return predh2;
+    }
+
+    public void setPredh2(String predh2) {
+        this.predh2 = predh2;
+    }
+
+    @SerializedName("oathbreaker")
+    private String oathbreaker;
+    @SerializedName("predh")
+    private String predh;
+    @SerializedName("predh2")
+    private String predh2;
+
+
+
+
     // --- Getters and Setters ---
 
     public String getStandard() {

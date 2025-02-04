@@ -1,108 +1,108 @@
 package local.ouphecollector.fragments;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import local.ouphecollector.R;
+import local.ouphecollector.adapters.CardPrintingAdapter;
 import local.ouphecollector.models.Card;
 
-public class AllPrintingsFragment extends Fragment {
+public class AllPrintingsFragment extends Fragment implements CardPrintingAdapter.OnCardClickListener {
 
-    private static final String TAG = "AllPrintingsFragment";
-    private List<Card> allPrintings;
     private RecyclerView allPrintingsRecyclerView;
+    private CardPrintingAdapter adapter;
+    private ProgressBar progressBar;
+    private TextView errorMessageTextView;
+    private static final String TAG = "AllPrintingsFragment";
+    private Toolbar toolbar;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_all_printings, container, false);
-        allPrintingsRecyclerView = view.findViewById(R.id.allPrintingsRecyclerView);
-        allPrintingsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 columns
 
-        if (getArguments() != null) {
-            ArrayList<? extends Parcelable> parcelableList = getArguments().getParcelableArrayList("allPrintings");
-            if (parcelableList != null) {
-                allPrintings = new ArrayList<>();
-                for (Parcelable parcelable : parcelableList) {
-                    if (parcelable instanceof Card) {
-                        allPrintings.add((Card) parcelable);
-                    }
-                }
-                AllPrintingsAdapter adapter = new AllPrintingsAdapter(allPrintings);
-                allPrintingsRecyclerView.setAdapter(adapter);
+        allPrintingsRecyclerView = view.findViewById(R.id.allPrintingsRecyclerView);
+        progressBar = view.findViewById(R.id.progressBar);
+        errorMessageTextView = view.findViewById(R.id.errorMessageTextView);
+        toolbar = view.findViewById(R.id.toolbar);
+
+        toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(view).navigateUp());
+
+        allPrintingsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        adapter = new CardPrintingAdapter(new ArrayList<>(), this);
+        allPrintingsRecyclerView.setAdapter(adapter);
+
+        showLoading();
+        if (getArguments() != null && getArguments().containsKey("allPrintings")) {
+            List<Card> allPrintings = getArguments().getParcelableArrayList("allPrintings");
+            if (allPrintings != null && !allPrintings.isEmpty()) {
+                adapter.updateData(allPrintings);
+                hideLoading();
             } else {
-                Log.e(TAG, "allPrintings is null");
+                showErrorMessage(getString(R.string.no_results_found));
             }
         } else {
-            Log.e(TAG, "Arguments are null");
+            showErrorMessage(getString(R.string.error_loading_data));
         }
 
         return view;
     }
 
-    private static class AllPrintingsAdapter extends RecyclerView.Adapter<AllPrintingsAdapter.PrintingViewHolder> {
-        private List<Card> printings;
-
-        public AllPrintingsAdapter(List<Card> printings) {
-            this.printings = printings;
+    private void showLoading() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
         }
-
-        @NonNull
-        @Override
-        public PrintingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.card_printing_item, parent, false); // Use the new layout
-            return new PrintingViewHolder(itemView);
+        if (errorMessageTextView != null) {
+            errorMessageTextView.setVisibility(View.GONE);
         }
-
-        @Override
-        public void onBindViewHolder(@NonNull PrintingViewHolder holder, int position) {
-            Card printing = printings.get(position);
-            if (printing.getImageUris() != null && printing.getImageUris().getNormal() != null) {
-                Glide.with(holder.itemView.getContext())
-                        .load(printing.getImageUris().getNormal())
-                        .into(holder.printingImageView);
-            }
-            holder.expansionNameTextView.setText(printing.getExpansionName()); // Set the expansion name
-            holder.itemView.setOnClickListener(v -> {
-                Bundle bundle = new Bundle();
-                bundle.putString("cardName", printing.getName());
-                Navigation.findNavController(v).navigate(R.id.action_allPrintingsFragment_to_cardDetailFragment, bundle);
-            });
+        if (allPrintingsRecyclerView != null) {
+            allPrintingsRecyclerView.setVisibility(View.GONE);
         }
+    }
 
-        @Override
-        public int getItemCount() {
-            return printings.size();
+    private void hideLoading() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
         }
-
-        static class PrintingViewHolder extends RecyclerView.ViewHolder {
-            ImageView printingImageView;
-            TextView expansionNameTextView; // Add TextView for expansion name
-
-            public PrintingViewHolder(View itemView) {
-                super(itemView);
-                printingImageView = itemView.findViewById(R.id.cardImageView); // Use the new ID
-                expansionNameTextView = itemView.findViewById(R.id.expansionNameTextView); // Use the new ID
-            }
+        if (allPrintingsRecyclerView != null) {
+            allPrintingsRecyclerView.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void showErrorMessage(String message) {
+        if (errorMessageTextView != null) {
+            errorMessageTextView.setText(message);
+            errorMessageTextView.setVisibility(View.VISIBLE);
+        }
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
+        if (allPrintingsRecyclerView != null) {
+            allPrintingsRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onCardClick(Card card) {
+        Log.d(TAG, "onCardClick: Card clicked: " + card.getName());
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("card", card);
+        Navigation.findNavController(requireView()).navigate(R.id.action_allPrintingsFragment_to_cardDetailFragment, bundle);
     }
 }
