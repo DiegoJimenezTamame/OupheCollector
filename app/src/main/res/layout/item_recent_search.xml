@@ -7,13 +7,13 @@
     android:padding="8dp">
 
     <ImageView
-        android:id="@+id/cardImage"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:id="@+id/recentSearchCardImage"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:scaleType="centerCrop" />
 
     <TextView
-        android:id="@+id/cardName"
+        android:id="@+id/recentSearchCardName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

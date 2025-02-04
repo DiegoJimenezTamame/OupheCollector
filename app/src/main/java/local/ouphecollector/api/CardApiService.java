@@ -11,10 +11,10 @@ import retrofit2.http.Url;
 
 public interface CardApiService {
     @GET("cards/named")
-    Call<Card> getCardByName(@Query("fuzzy") String name);
+    Call<Card> getCardByName(@Query("exact") String cardName);
 
     @GET("cards/search")
-    Call<CardList> searchCardsByName(@Query("q") String query);
+    Call<CardList> searchCardsByName(@Query("q") String cardName);
 
     @GET("symbology")
     Call<CardSymbolList> getCardSymbols();

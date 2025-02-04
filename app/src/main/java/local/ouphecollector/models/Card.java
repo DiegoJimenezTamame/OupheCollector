@@ -11,7 +11,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Card implements Parcelable {
@@ -71,6 +70,18 @@ public class Card implements Parcelable {
 
     @SerializedName("prints_search_uri")
     private String printsSearchUri;
+
+    @SerializedName("set_name")
+    private String expansionName;
+
+
+    public String getExpansionName() {
+        return expansionName;
+    }
+
+    public void setExpansionName(String expansionName) {
+        this.expansionName = expansionName;
+    }
 
     // --- Getters and Setters ---
 
@@ -247,7 +258,7 @@ public class Card implements Parcelable {
     }
 
     public void readFromParcel(Parcel source) {
-        this.id = Objects.requireNonNull(source.readString());
+        this.id = source.readString();
         this.name = source.readString();
         this.manaCost = source.readString();
         this.typeLine = source.readString();
@@ -272,7 +283,7 @@ public class Card implements Parcelable {
     }
 
     protected Card(Parcel in) {
-        this.id = Objects.requireNonNull(in.readString());
+        this.id = in.readString();
         this.name = in.readString();
         this.manaCost = in.readString();
         this.typeLine = in.readString();
@@ -304,4 +315,5 @@ public class Card implements Parcelable {
             return new Card[size];
         }
     };
-}
+    }
+

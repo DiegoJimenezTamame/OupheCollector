@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -29,7 +28,6 @@ import local.ouphecollector.api.RetrofitClient;
 import local.ouphecollector.models.Card;
 import local.ouphecollector.models.CardList;
 import local.ouphecollector.models.Legalities;
-import local.ouphecollector.models.RelatedCard;
 import local.ouphecollector.views.ManaCostView;
 import local.ouphecollector.views.SymbolManager;
 import local.ouphecollector.views.SymbolizedTextView;
@@ -157,27 +155,30 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
         int maxPrintings = Math.min(3, printings.size());
         for (int i = 0; i < maxPrintings; i++) {
             Card printing = printings.get(i);
-            setNames.add(printing.getSet());
+            setNames.add(printing.getExpansionName());
             limitedPrintings.add(printing);
         }
-        if (printings.size() > 3) {
-            setNames.add(SHOW_ALL_PRINTINGS);
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, setNames);
+        setNames.add(SHOW_ALL_PRINTINGS);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, setNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         setSpinner.setAdapter(adapter);
+
         setSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (setNames.get(position).equals(SHOW_ALL_PRINTINGS)) {
-                    // Navigate to the new fragment to show all printings
+                String selectedSetName = (String) parent.getItemAtPosition(position);
+                if (selectedSetName.equals(SHOW_ALL_PRINTINGS)) {
                     Bundle bundle = new Bundle();
-                    ArrayList<? extends Parcelable> parcelablePrintings = new ArrayList<>(printings);
-                    bundle.putParcelableArrayList("allPrintings", parcelablePrintings);
+                    bundle.putParcelableArrayList("allPrintings", (ArrayList<? extends Parcelable>) printings);
                     Navigation.findNavController(view).navigate(R.id.action_cardDetailFragment_to_allPrintingsFragment, bundle);
                 } else {
-                    Card selectedPrinting = limitedPrintings.get(position);
-                    updateUI(selectedPrinting);
+                    for (Card printing : limitedPrintings) {
+                        if (printing.getExpansionName().equals(selectedSetName)) {
+                            updateUI(printing);
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -188,7 +189,7 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
         });
     }
 
-    private void showDifferentVersionsDialog(List<RelatedCard> relatedCards) {
+    /*private void showDifferentVersionsDialog(List<RelatedCard> relatedCards) {
         if (relatedCards == null || relatedCards.isEmpty()) {
             return;
         }
@@ -200,15 +201,13 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
                 .setTitle("Different Versions")
                 .setItems(cardNames, (dialog, which) -> fetchCardDetails(cardNames[which]))
                 .show();
-    }
+    }*/
+
     private void updateUI(Card card) {
 
         if (card == null) {
             Log.e(TAG, "Card object is null");
             return;
-        }
-        if (card.getAllParts() != null) {
-            showDifferentVersionsDialog(card.getAllParts());
         }
         cardNameTextView.setText(card.getName());
         Log.d(TAG, "Card name set: " + card.getName());

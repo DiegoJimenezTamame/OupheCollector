@@ -8,6 +8,5 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/allPrintingsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_printing" />
+        android:layout_height="match_parent" />
 </FrameLayout>

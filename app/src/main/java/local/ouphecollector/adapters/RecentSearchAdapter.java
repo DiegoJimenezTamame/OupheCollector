@@ -21,32 +21,33 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
+public class RecentSearchAdapter extends RecyclerView.Adapter<RecentSearchAdapter.RecentSearchViewHolder> {
 
-    private List<Card> cards;
-    private OnCardClickListener listener;
+    private List<String> recentSearches;
+    private OnRecentSearchClickListener listener;
 
-    public interface OnCardClickListener {
-        void onCardClicked(Card card);
+    public interface OnRecentSearchClickListener {
+        void onRecentSearchClicked(String cardName);
     }
 
-    public CardAdapter(List<Card> cards, OnCardClickListener listener) {
-        this.cards = cards;
+    public RecentSearchAdapter(List<String> recentSearches, OnRecentSearchClickListener listener) {
+        this.recentSearches = recentSearches;
         this.listener = listener;
     }
 
     @NonNull
     @Override
-    public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
-        return new CardViewHolder(view);
+    public RecentSearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recent_search, parent, false);
+        return new RecentSearchViewHolder(view);
     }
+
     @Override
-    public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        Card card = cards.get(position);
-        holder.cardNameTextView.setText(card.getName());
-        fetchCardImage(card.getName(), holder.cardImageView);
-        holder.itemView.setOnClickListener(v -> listener.onCardClicked(card));
+    public void onBindViewHolder(@NonNull RecentSearchViewHolder holder, int position) {
+        String cardName = recentSearches.get(position);
+        holder.cardNameTextView.setText(cardName);
+        fetchCardImage(cardName, holder.cardImageView);
+        holder.itemView.setOnClickListener(v -> listener.onRecentSearchClicked(cardName));
     }
 
     private void fetchCardImage(String cardName, ImageView cardImageView) {
@@ -74,17 +75,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     @Override
     public int getItemCount() {
-        return cards.size();
+        return recentSearches.size();
     }
 
-    public static class CardViewHolder extends RecyclerView.ViewHolder {
+    public static class RecentSearchViewHolder extends RecyclerView.ViewHolder {
         TextView cardNameTextView;
         ImageView cardImageView;
 
-        public CardViewHolder(@NonNull View itemView) {
+        public RecentSearchViewHolder(@NonNull View itemView) {
             super(itemView);
-            cardNameTextView = itemView.findViewById(R.id.cardName);
-            cardImageView = itemView.findViewById(R.id.cardImage);
+            cardNameTextView = itemView.findViewById(R.id.recentSearchCardName);
+            cardImageView = itemView.findViewById(R.id.recentSearchCardImage);
         }
     }
 }

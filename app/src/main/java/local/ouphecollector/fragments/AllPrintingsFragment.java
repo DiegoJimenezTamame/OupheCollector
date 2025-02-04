@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -68,7 +69,7 @@ public class AllPrintingsFragment extends Fragment {
         @Override
         public PrintingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_printing, parent, false);
+                    .inflate(R.layout.card_printing_item, parent, false); // Use the new layout
             return new PrintingViewHolder(itemView);
         }
 
@@ -80,6 +81,7 @@ public class AllPrintingsFragment extends Fragment {
                         .load(printing.getImageUris().getNormal())
                         .into(holder.printingImageView);
             }
+            holder.expansionNameTextView.setText(printing.getExpansionName()); // Set the expansion name
             holder.itemView.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString("cardName", printing.getName());
@@ -94,10 +96,12 @@ public class AllPrintingsFragment extends Fragment {
 
         static class PrintingViewHolder extends RecyclerView.ViewHolder {
             ImageView printingImageView;
+            TextView expansionNameTextView; // Add TextView for expansion name
 
             public PrintingViewHolder(View itemView) {
                 super(itemView);
-                printingImageView = itemView.findViewById(R.id.printingImageView);
+                printingImageView = itemView.findViewById(R.id.cardImageView); // Use the new ID
+                expansionNameTextView = itemView.findViewById(R.id.expansionNameTextView); // Use the new ID
             }
         }
     }
