@@ -1,27 +1,27 @@
 package local.ouphecollector.models;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "collection")
+import java.util.Date;
+
+@Entity(tableName = "collection_table")
 public class Collection {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private String card_id;
-    private int quantity;
-    private String condition;
-    private boolean is_foil;
-    private String language;
-    private String set_code;
+    private String name;
+    private String tag;
+    @ColumnInfo(name = "created_at")
+    private Date createdAt;
+    @ColumnInfo(name = "last_modified")
+    private Date lastModified;
 
-    // Constructor, getters, and setters
-    public Collection(String card_id, int quantity, String condition, boolean is_foil, String language, String set_code) {
-        this.card_id = card_id;
-        this.quantity = quantity;
-        this.condition = condition;
-        this.is_foil = is_foil;
-        this.language = language;
-        this.set_code = set_code;
+    public Collection(String name, String tag) {
+        this.name = name;
+        this.tag = tag;
+        this.createdAt = new Date();
+        this.lastModified = new Date();
     }
 
     public int getId() {
@@ -32,51 +32,37 @@ public class Collection {
         this.id = id;
     }
 
-    public String getCard_id() {
-        return card_id;
+    public String getName() {
+        return name;
     }
 
-    public void setCard_id(String card_id) {
-        this.card_id = card_id;
+    public void setName(String name) {
+        this.name = name;
+        this.lastModified = new Date();
     }
 
-    public int getQuantity() {
-        return quantity;
+    public String getTag() {
+        return tag;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setTag(String tag) {
+        this.tag = tag;
+        this.lastModified = new Date();
     }
 
-    public String getCondition() {
-        return condition;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public boolean isIs_foil() {
-        return is_foil;
+    public Date getLastModified() {
+        return lastModified;
     }
 
-    public void setIs_foil(boolean is_foil) {
-        this.is_foil = is_foil;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public String getSet_code() {
-        return set_code;
-    }
-
-    public void setSet_code(String set_code) {
-        this.set_code = set_code;
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 }

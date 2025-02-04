@@ -57,6 +57,8 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
     private Card currentCard;
     private List<Card> cardPrintings;
     private static final String SHOW_ALL_PRINTINGS = "Show all Printings";
+    private List<Card> limitedPrintings;
+    private boolean isPrintingSelected = false;
 
     @Nullable
     @Override
@@ -80,56 +82,50 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
         progressBar = view.findViewById(R.id.progressBar);
         errorMessageTextView = view.findViewById(R.id.errorMessageTextView);
 
-        Log.d(TAG, "onCreateView: Started");
-
         if (getArguments() != null) {
             if (getArguments().containsKey("card")) {
-                // Card object was passed (from AllPrintingsFragment)
-                Card newCard = getArguments().getParcelable("card");
-                Log.d(TAG, "onCreateView: Card received from arguments: " + (newCard != null ? newCard.getName() : "null"));
-                if (newCard != null) {
-                    currentCard = newCard;
-                    Log.d(TAG, "onCreateView: currentCard updated to: " + currentCard.getName());
+                // Card object was passed (from AllPrintingsFragment or main search)
+                currentCard = getArguments().getParcelable("card");
+                isPrintingSelected = getArguments().getBoolean("isPrintingSelected", false);
+                showLoading();
+                if (SymbolManager.getInstance(getContext()).isInitialized()) {
                     updateUI(currentCard);
+                    if (!isPrintingSelected) {
+                        fetchCardPrintings(currentCard);
+                    }
                 } else {
-                    Log.e(TAG, "onCreateView: newCard is null");
+                    Log.d(TAG, "Symbols not loaded yet, waiting for callback");
+                    SymbolManager.getInstance(getContext()).addCallback(CardDetailFragment.this);
                 }
             } else if (getArguments().containsKey("cardName")) {
                 // Card name was passed (from main search)
                 String cardName = getArguments().getString("cardName");
-                Log.d(TAG, "onCreateView: cardName received: " + cardName);
                 showLoading();
                 fetchCardDetails(cardName);
             }
-        } else {
-            Log.e(TAG, "onCreateView: getArguments() is null");
         }
 
-        Log.d(TAG, "onCreateView: Finished");
         return view;
     }
 
     private void fetchCardDetails(String cardName) {
-        Log.d(TAG, "fetchCardDetails: Started for cardName: " + cardName);
         CardApiService apiService = RetrofitClient.getRetrofitInstance().create(CardApiService.class);
         Call<Card> call = apiService.getCardByName(cardName);
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Card> call, @NonNull Response<Card> response) {
-                Log.d(TAG, "fetchCardDetails: onResponse");
                 if (response.isSuccessful() && response.body() != null) {
                     currentCard = response.body();
-                    Log.d(TAG, "fetchCardDetails: currentCard updated to: " + currentCard.getName());
                     if (SymbolManager.getInstance(getContext()).isInitialized()) {
                         updateUI(currentCard);
-                        updateCardPrintings(currentCard);
+                        fetchCardPrintings(currentCard);
                     } else {
-                        Log.d(TAG, "fetchCardDetails: Symbols not loaded yet, waiting for callback");
+                        Log.d(TAG, "Symbols not loaded yet, waiting for callback");
                         SymbolManager.getInstance(getContext()).addCallback(CardDetailFragment.this);
                     }
                 } else {
                     showErrorMessage(getString(R.string.error_loading_data));
-                    Log.e(TAG, "fetchCardDetails: Error fetching card details: " + response.message() + " " + response.code());
+                    Log.e(TAG, "Error fetching card details: " + response.message() + " " + response.code());
                 }
                 hideLoading();
             }
@@ -137,25 +133,17 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
             @Override
             public void onFailure(@NonNull Call<Card> call, @NonNull Throwable t) {
                 showErrorMessage(getString(R.string.error_loading_data));
-                Log.e(TAG, "fetchCardDetails: Error fetching card details", t);
+                Log.e(TAG, "Error fetching card details", t);
                 hideLoading();
             }
         });
     }
 
-    private void updateCardPrintings(Card card) {
-        if (card == null) {
-            Log.e(TAG, "updateCardPrintings: Card is null");
-            return;
-        }
+    private void fetchCardPrintings(Card card) {
         if (card.getPrintsSearchUri() == null || card.getPrintsSearchUri().isEmpty()) {
-            Log.e(TAG, "updateCardPrintings: Prints search URI is null or empty");
+            Log.e(TAG, "Prints search URI is null or empty");
             return;
         }
-        Log.d(TAG, "updateCardPrintings: Started for card: " + card.getName());
-        Log.d(TAG, "updateCardPrintings: currentCard.getName() = " + card.getName());
-        Log.d(TAG, "updateCardPrintings: currentCard.getPrintsSearchUri() = " + card.getPrintsSearchUri());
-        showLoading();
         CardApiService apiService = RetrofitClient.getRetrofitInstance().create(CardApiService.class);
         Call<CardList> call = apiService.getCardPrintings(card.getPrintsSearchUri());
         call.enqueue(new Callback<>() {
@@ -163,7 +151,6 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
             public void onResponse(@NonNull Call<CardList> call, @NonNull Response<CardList> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     cardPrintings = response.body().getData();
-                    Log.d(TAG, "updateCardPrintings: cardPrintings.size() = " + cardPrintings.size());
                     if (cardPrintings.isEmpty()) {
                         showErrorMessage(getString(R.string.no_results_found));
                     } else {
@@ -187,12 +174,11 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
 
     private void populateSetSpinner(List<Card> printings) {
         if (printings == null || printings.isEmpty()) {
-            Log.e(TAG, "populateSetSpinner: No card printings found");
+            Log.e(TAG, "No card printings found");
             return;
         }
-        Log.d(TAG, "populateSetSpinner: Started with " + printings.size() + " printings");
         List<String> setNames = new ArrayList<>();
-        List<Card> limitedPrintings = new ArrayList<>();
+        limitedPrintings = new ArrayList<>();
         int maxPrintings = Math.min(3, printings.size());
         for (int i = 0; i < maxPrintings; i++) {
             Card printing = printings.get(i);
@@ -209,19 +195,14 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedSetName = (String) parent.getItemAtPosition(position);
-                Log.d(TAG, "onItemSelected: Selected set: " + selectedSetName);
                 if (selectedSetName.equals(SHOW_ALL_PRINTINGS)) {
-                    Log.d(TAG, "onItemSelected: Navigating to AllPrintingsFragment");
                     Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList("allPrintings", (ArrayList<? extends Parcelable>) cardPrintings);
+                    bundle.putParcelableArrayList("allPrintings", (ArrayList<? extends Parcelable>) printings);
                     Navigation.findNavController(view).navigate(R.id.action_cardDetailFragment_to_allPrintingsFragment, bundle);
                 } else {
-                    for (Card printing : cardPrintings) {
+                    for (Card printing : limitedPrintings) {
                         if (printing.getExpansionName().equals(selectedSetName)) {
-                            Log.d(TAG, "onItemSelected: Found matching printing: " + printing.getName());
-                            currentCard = printing;
-                            Log.d(TAG, "onItemSelected: currentCard updated to: " + currentCard.getName());
-                            updateUI(currentCard);
+                            updateUI(printing);
                             break;
                         }
                     }
@@ -233,24 +214,23 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
                 // Do nothing
             }
         });
-        Log.d(TAG, "populateSetSpinner: Finished");
     }
 
     private void updateUI(Card card) {
         if (card == null) {
-            Log.e(TAG, "updateUI: Card object is null");
+            Log.e(TAG, "Card object is null");
             return;
         }
-        Log.d(TAG, "updateUI: Started for card: " + card.getName());
+        currentCard = card;
         if (card.getName() != null) {
             cardNameTextView.setText(card.getName());
-            Log.d(TAG, "updateUI: Card name set: " + card.getName());
+            Log.d(TAG, "Card name set: " + card.getName());
         } else {
             cardNameTextView.setText("");
         }
         if (card.getManaCost() != null) {
             cardManaCostView.setManaCost(card.getManaCost());
-            Log.d(TAG, "updateUI: Card mana cost set: " + card.getManaCost());
+            Log.d(TAG, "Card mana cost set: " + card.getManaCost());
         } else {
             cardManaCostView.setManaCost("");
         }
@@ -334,65 +314,54 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
                     "Vintage: " + legalities.getVintage() + "\n" +
                     "Penny: " + legalities.getPenny() + "\n" +
                     "Commander: " + legalities.getCommander() + "\n" +
-                    "Oathbreaker: " + legalities.getOathbreaker() + "\n" +
                     "Brawl: " + legalities.getBrawl() + "\n" +
                     "HistoricBrawl: " + legalities.getHistoricBrawl() + "\n" +
                     "Alchemy: " + legalities.getAlchemy() + "\n" +
-                    "PauperCommander: " + legalities.getPauperCommander();
+                    "PauperCommander: " + legalities.getPauperCommander() + "\n" +
+                    "Duel: " + legalities.getDuel() + "\n" +
+                    "Oldschool: " + legalities.getOldschool() + "\n" +
+                    "Premodern: " + legalities.getPremodern();
             cardLegalitiesTextView.setText(legalitiesText);
             cardLegalitiesTextView.setVisibility(View.VISIBLE);
         } else {
             cardLegalitiesTextView.setVisibility(View.GONE);
         }
+
+        // Load Image
         if (card.getImageUris() != null && card.getImageUris().getNormal() != null) {
-            Glide.with(getContext())
+            Glide.with(this)
                     .load(card.getImageUris().getNormal())
                     .into(cardImageView);
         } else {
-            Glide.with(getContext())
+            Glide.with(this)
                     .load(R.drawable.no_image)
                     .into(cardImageView);
         }
-        Log.d(TAG, "updateUI: Finished for card: " + card.getName());
     }
-
 
     @Override
     public void onSymbolsLoaded() {
-        Log.d(TAG, "onSymbolsLoaded: Symbols loaded, updating UI");
+        Log.d(TAG, "onSymbolsLoaded called");
         if (currentCard != null) {
             updateUI(currentCard);
         }
     }
 
     private void showLoading() {
-        Log.d(TAG, "showLoading: Showing loading indicator");
-        if (progressBar != null) {
-            progressBar.setVisibility(View.VISIBLE);
-        }
-        if (errorMessageTextView != null) {
-            errorMessageTextView.setVisibility(View.GONE);
-        }
+        progressBar.setVisibility(View.VISIBLE);
+        errorMessageTextView.setVisibility(View.GONE);
+        // Hide other views if necessary
     }
 
     private void hideLoading() {
-        Log.d(TAG, "hideLoading: Hiding loading indicator");
-        if (progressBar != null) {
-            progressBar.setVisibility(View.GONE);
-        }
+        progressBar.setVisibility(View.GONE);
+        // Show other views if necessary
     }
 
     private void showErrorMessage(String message) {
-        Log.e(TAG, "showErrorMessage: Showing error message: " + message);
-        if (errorMessageTextView != null) {
-            errorMessageTextView.setText(message);
-            errorMessageTextView.setVisibility(View.VISIBLE);
-        }
-        if (progressBar != null) {
-            progressBar.setVisibility(View.GONE);
-        }
+        errorMessageTextView.setText(message);
+        errorMessageTextView.setVisibility(View.VISIBLE);
+        // Hide other views if necessary
     }
-
-
 }
 

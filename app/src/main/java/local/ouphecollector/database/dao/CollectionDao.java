@@ -7,9 +7,9 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import local.ouphecollector.models.Collection;
-
 import java.util.List;
+
+import local.ouphecollector.models.Collection;
 
 @Dao
 public interface CollectionDao {
@@ -22,12 +22,9 @@ public interface CollectionDao {
     @Delete
     void delete(Collection collection);
 
-    @Query("SELECT * FROM collection") // Changed to "collection"
+    @Query("SELECT * FROM collection_table")
     LiveData<List<Collection>> getAllCollections();
 
-    @Query("SELECT * FROM collection WHERE id = :collectionId") // Changed to "collection"
+    @Query("SELECT * FROM collection_table WHERE id = :collectionId")
     Collection getCollectionById(int collectionId);
-
-    @Query("SELECT * FROM collection WHERE card_id = :cardId") // Changed to "collection"
-    List<Collection> getCollectionsByCardId(String cardId);
 }

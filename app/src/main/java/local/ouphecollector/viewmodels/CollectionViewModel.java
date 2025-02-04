@@ -5,14 +5,14 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import java.util.List;
+
 import local.ouphecollector.models.Collection;
 import local.ouphecollector.repositories.CollectionRepository;
 
-import java.util.List;
-
 public class CollectionViewModel extends AndroidViewModel {
     private CollectionRepository collectionRepository;
-    private LiveData<List<Collection>> allCollections; // Changed to LiveData
+    private LiveData<List<Collection>> allCollections;
 
     public CollectionViewModel(Application application) {
         super(application);
@@ -24,15 +24,19 @@ public class CollectionViewModel extends AndroidViewModel {
         return allCollections;
     }
 
-    public void insertCollection(Collection collection) {
-        collectionRepository.insertCollection(collection);
+    public Collection getCollectionById(int collectionId) {
+        return collectionRepository.getCollectionById(collectionId);
     }
 
-    public void updateCollection(Collection collection) {
-        collectionRepository.updateCollection(collection);
+    public void insert(Collection collection) {
+        collectionRepository.insert(collection);
     }
 
-    public void deleteCollection(Collection collection) {
-        collectionRepository.deleteCollection(collection);
+    public void update(Collection collection) {
+        collectionRepository.update(collection);
+    }
+
+    public void delete(Collection collection) {
+        collectionRepository.delete(collection);
     }
 }

@@ -4,11 +4,11 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.List;
+
 import local.ouphecollector.database.AppDatabase;
 import local.ouphecollector.database.dao.CollectionDao;
 import local.ouphecollector.models.Collection;
-
-import java.util.List;
 
 public class CollectionRepository {
     private CollectionDao collectionDao;
@@ -21,32 +21,22 @@ public class CollectionRepository {
     }
 
     public LiveData<List<Collection>> getAllCollections() {
-        return allCollections; // Changed to LiveData
+        return allCollections;
     }
 
     public Collection getCollectionById(int collectionId) {
         return collectionDao.getCollectionById(collectionId);
     }
 
-    public List<Collection> getCollectionsByCardId(String cardId) {
-        return collectionDao.getCollectionsByCardId(cardId);
+    public void insert(Collection collection) {
+        AppDatabase.databaseWriteExecutor.execute(() -> collectionDao.insert(collection));
     }
 
-    public void insertCollection(Collection collection) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            collectionDao.insert(collection);
-        });
+    public void update(Collection collection) {
+        AppDatabase.databaseWriteExecutor.execute(() -> collectionDao.update(collection));
     }
 
-    public void updateCollection(Collection collection) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            collectionDao.update(collection);
-        });
-    }
-
-    public void deleteCollection(Collection collection) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            collectionDao.delete(collection);
-        });
+    public void delete(Collection collection) {
+        AppDatabase.databaseWriteExecutor.execute(() -> collectionDao.delete(collection));
     }
 }

@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_nav_collection_to_nav_scanner"
             app:destination="@id/nav_scanner" />
+        <action
+            android:id="@+id/action_collectionFragment_to_cardCollectionFragment"
+            app:destination="@id/cardCollectionFragment" />
     </fragment>
 
     <fragment
@@ -91,4 +94,9 @@
             android:id="@+id/action_searchHistoryFragment_to_nav_cardDetail"
             app:destination="@id/nav_cardDetail" />
     </fragment>
+    <fragment
+        android:id="@+id/cardCollectionFragment"
+        android:name="local.ouphecollector.fragments.CardCollectionFragment"
+        android:label="CardCollectionFragment"
+        tools:layout="@layout/fragment_card_collection" />
 </navigation>

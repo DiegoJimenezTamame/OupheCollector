@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/text_view_card_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Card ID"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_view_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quantity: 0" />
+
+    <TextView
+        android:id="@+id/text_view_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Condition: NM" />
+
+    <TextView
+        android:id="@+id/text_view_is_foil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Foil: false" />
+
+    <TextView
+        android:id="@+id/text_view_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Language: EN" />
+
+    <TextView
+        android:id="@+id/text_view_set_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Code: M21" />
+
+</LinearLayout>
