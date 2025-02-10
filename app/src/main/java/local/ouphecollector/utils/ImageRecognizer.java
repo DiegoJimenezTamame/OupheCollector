@@ -7,7 +7,6 @@ import androidx.annotation.OptIn;
 import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageProxy;
 
-import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.label.ImageLabel;
 import com.google.mlkit.vision.label.ImageLabeler;
@@ -21,20 +20,20 @@ import java.util.concurrent.Executors;
 public class ImageRecognizer {
 
     private static final String TAG = "ImageRecognizer";
+    private static final float CONFIDENCE_THRESHOLD = 0.7f;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final ImageLabeler labeler;
 
     public ImageRecognizer() {
-        labeler = ImageLabeling.getClient(new ImageLabelerOptions.Builder().setConfidenceThreshold(0.5f).build());
+        labeler = ImageLabeling.getClient(new ImageLabelerOptions.Builder().setConfidenceThreshold(CONFIDENCE_THRESHOLD).build());
     }
 
     public void recognize(ImageProxy imageProxy, RecognitionCallback callback) {
         Log.d(TAG, "Recognizing image");
         executorService.execute(() -> {
-            InputImage image = getInputImageFromImageProxy(imageProxy);
+            InputImage image = getInputImageFromImageProxy(imageProxy, callback);
             if (image == null) {
                 Log.e(TAG, "Failed to create InputImage from ImageProxy");
-                callback.onLabelsRecognized(null);
                 return;
             }
             extractLabelsFromImage(image, callback);
@@ -42,18 +41,16 @@ public class ImageRecognizer {
     }
 
     private void extractLabelsFromImage(InputImage image, RecognitionCallback callback) {
-        Task<List<ImageLabel>> result = labeler.process(image)
+        labeler.process(image) // Removed the 'result' variable here
                 .addOnSuccessListener(labels -> {
-                    // Task completed successfully
                     for (ImageLabel label : labels) {
                         Log.d(TAG, "Extracted label: " + label.getText() + " - Confidence: " + label.getConfidence());
                     }
-                    callback.onLabelsRecognized(labels);
+                    callback.onLabelsRecognized(labels, null);
                 })
                 .addOnFailureListener(e -> {
-                    // Task failed with an exception
                     Log.e(TAG, "Error extracting labels: " + e.getMessage());
-                    callback.onLabelsRecognized(null);
+                    callback.onLabelsRecognized(null, "Error: " + e.getMessage());
                 })
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -65,16 +62,18 @@ public class ImageRecognizer {
     }
 
     @OptIn(markerClass = ExperimentalGetImage.class)
-    private InputImage getInputImageFromImageProxy(ImageProxy imageProxy) {
+    private InputImage getInputImageFromImageProxy(ImageProxy imageProxy, RecognitionCallback callback) {
         Image mediaImage = imageProxy.getImage();
         if (mediaImage == null) {
             Log.e(TAG, "mediaImage is null");
+            callback.onLabelsRecognized(null, "Error: mediaImage is null");
             return null;
         }
         try {
             return InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
         } catch (IllegalStateException e) {
             Log.e(TAG, "Error creating InputImage: " + e.getMessage());
+            callback.onLabelsRecognized(null, "Error: " + e.getMessage());
             return null;
         }
     }
@@ -84,6 +83,6 @@ public class ImageRecognizer {
     }
 
     public interface RecognitionCallback {
-        void onLabelsRecognized(List<ImageLabel> labels);
+        void onLabelsRecognized(List<ImageLabel> labels, String error);
     }
 }

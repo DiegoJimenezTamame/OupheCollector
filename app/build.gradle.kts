@@ -61,7 +61,9 @@ dependencies {
     implementation("androidx.media3:media3-common:1.5.1")
 
     // ML Kit Image Labeling
-    implementation("com.google.mlkit:image-labeling:17.0.7") // Add this line!
+    implementation("com.google.mlkit:image-labeling:17.0.7")
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition-common:19.1.0")
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1") // Add this line!
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
@@ -100,4 +102,7 @@ dependencies {
     implementation("com.caverock:androidsvg-aar:1.4") // For SVG support
 
     implementation("com.squareup.picasso:picasso:2.8")
+
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition-common:19.1.0")
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
 }
