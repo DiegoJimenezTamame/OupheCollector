@@ -18,7 +18,8 @@ public class CardCollectionRepository {
         cardCollectionDao = db.cardCollectionDao();
     }
 
-    public LiveData<List<CardCollection>> getCardCollectionsByCollectionId(int collectionId) {
+    // Changed parameter type to String
+    public LiveData<List<CardCollection>> getCardCollectionsByCollectionId(String collectionId) {
         return cardCollectionDao.getCardCollectionsByCollectionId(collectionId);
     }
 

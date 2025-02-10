@@ -64,8 +64,9 @@
         android:label="Card Detail"
         tools:layout="@layout/fragment_card_detail">
         <argument
-            android:name="cardName"
-            app:argType="string" />
+            android:name="card"
+            app:argType="local.ouphecollector.models.Card"
+            app:nullable="true" />
         <action
             android:id="@+id/action_cardDetailFragment_to_allPrintingsFragment"
             app:destination="@id/nav_allPrintings" />
@@ -75,7 +76,16 @@
         android:id="@+id/nav_scanner"
         android:name="local.ouphecollector.fragments.ScannerFragment"
         android:label="@string/menu_scanner"
-        tools:layout="@layout/fragment_scanner" />
+        tools:layout="@layout/fragment_scanner">
+        <action
+            android:id="@+id/action_nav_scanner_to_nav_cardDetail"
+            app:destination="@id/nav_cardDetail">
+            <argument
+                android:name="card"
+                app:argType="local.ouphecollector.models.Card"
+                app:nullable="true" />
+        </action>
+    </fragment>
     <fragment
         android:id="@+id/nav_allPrintings"
         android:name="local.ouphecollector.fragments.AllPrintingsFragment"

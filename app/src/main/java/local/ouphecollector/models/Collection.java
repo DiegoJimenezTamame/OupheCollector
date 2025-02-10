@@ -1,15 +1,19 @@
 package local.ouphecollector.models;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Entity(tableName = "collection_table")
 public class Collection {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @NonNull
+    @PrimaryKey
+    private String id;
     private String name;
     private String tag;
     @ColumnInfo(name = "created_at")
@@ -17,18 +21,27 @@ public class Collection {
     @ColumnInfo(name = "last_modified")
     private Date lastModified;
 
+    @Ignore // Ignore this constructor
     public Collection(String name, String tag) {
         this.name = name;
         this.tag = tag;
+        this.id = UUID.randomUUID().toString();
         this.createdAt = new Date();
         this.lastModified = new Date();
     }
 
-    public int getId() {
+    public Collection() {
+        // No-arg constructor is now the only one Room will use
+        id = "";
+    }
+
+    @NonNull
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 

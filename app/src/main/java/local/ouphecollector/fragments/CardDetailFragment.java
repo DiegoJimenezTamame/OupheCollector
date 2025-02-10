@@ -244,8 +244,8 @@ public class CardDetailFragment extends Fragment implements SymbolManager.Symbol
         } else {
             cardRarityTextView.setText("");
         }
-        if (card.getSet() != null) {
-            cardSetTextView.setText(getString(R.string.set_format, card.getSet()));
+        if (card.getSetCode() != null) {
+            cardSetTextView.setText(getString(R.string.set_format, card.getSetCode()));
         } else {
             cardSetTextView.setText("");
         }

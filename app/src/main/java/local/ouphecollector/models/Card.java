@@ -5,20 +5,21 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Card implements Parcelable {
 
-    @PrimaryKey
     @NonNull
-    @SerializedName("id")
-    public String id = "";
+    @PrimaryKey
+    public String id;
 
     @SerializedName("name")
     private String name;
@@ -51,7 +52,7 @@ public class Card implements Parcelable {
     private String rarity;
 
     @SerializedName("set")
-    private String set;
+    private String setCode;
 
     @SerializedName("flavor_text")
     private String flavorText;
@@ -74,6 +75,20 @@ public class Card implements Parcelable {
     @SerializedName("set_name")
     private String expansionName;
 
+    @SerializedName("collector_number")
+    private String collectorNumber;
+
+    public Card() {
+        id = "";
+    }
+
+    public String getCollectorNumber() {
+        return collectorNumber;
+    }
+
+    public void setCollectorNumber(String collectorNumber) {
+        this.collectorNumber = collectorNumber;
+    }
 
     public String getExpansionName() {
         return expansionName;
@@ -101,12 +116,13 @@ public class Card implements Parcelable {
         this.allParts = allParts;
     }
 
+
     @NonNull
     public String getId() {
         return id;
     }
 
-    public void setId(@NonNull String id) {
+    public void setId (@NonNull String id) {
         this.id = id;
     }
 
@@ -190,12 +206,12 @@ public class Card implements Parcelable {
         this.rarity = rarity;
     }
 
-    public String getSet() {
-        return set;
+    public String getSetCode() {
+        return setCode;
     }
 
-    public void setSet(String set) {
-        this.set = set;
+    public void setSetCode(String setCode) {
+        this.setCode = setCode;
     }
 
     public String getFlavorText() {
@@ -248,17 +264,19 @@ public class Card implements Parcelable {
         dest.writeStringList(this.colorIdentity);
         dest.writeString(this.artist);
         dest.writeString(this.rarity);
-        dest.writeString(this.set);
+        dest.writeString(this.setCode);
         dest.writeString(this.flavorText);
         dest.writeParcelable(this.imageUris, flags);
         dest.writeParcelable(this.legalities, flags);
         dest.writeParcelable(this.relatedUris, flags);
         dest.writeList(this.allParts);
         dest.writeString(this.printsSearchUri);
+        dest.writeString(this.expansionName);
+        dest.writeString(this.collectorNumber);
     }
 
     public void readFromParcel(Parcel source) {
-        this.id = source.readString();
+        this.id = Objects.requireNonNull(source.readString());
         this.name = source.readString();
         this.manaCost = source.readString();
         this.typeLine = source.readString();
@@ -269,7 +287,7 @@ public class Card implements Parcelable {
         this.colorIdentity = source.createStringArrayList();
         this.artist = source.readString();
         this.rarity = source.readString();
-        this.set = source.readString();
+        this.setCode = source.readString();
         this.flavorText = source.readString();
         this.imageUris = source.readParcelable(ImageUris.class.getClassLoader());
         this.legalities = source.readParcelable(Legalities.class.getClassLoader());
@@ -277,13 +295,13 @@ public class Card implements Parcelable {
         this.allParts = new ArrayList<>();
         source.readList(this.allParts, RelatedCard.class.getClassLoader());
         this.printsSearchUri = source.readString();
+        this.expansionName = source.readString();
+        this.collectorNumber = source.readString();
     }
 
-    public Card() {
-    }
-
+    @Ignore
     protected Card(Parcel in) {
-        this.id = in.readString();
+        this.id = Objects.requireNonNull(in.readString());
         this.name = in.readString();
         this.manaCost = in.readString();
         this.typeLine = in.readString();
@@ -294,7 +312,7 @@ public class Card implements Parcelable {
         this.colorIdentity = in.createStringArrayList();
         this.artist = in.readString();
         this.rarity = in.readString();
-        this.set = in.readString();
+        this.setCode = in.readString();
         this.flavorText = in.readString();
         this.imageUris = in.readParcelable(ImageUris.class.getClassLoader());
         this.legalities = in.readParcelable(Legalities.class.getClassLoader());
@@ -302,9 +320,11 @@ public class Card implements Parcelable {
         this.allParts = new ArrayList<>();
         in.readList(this.allParts, RelatedCard.class.getClassLoader());
         this.printsSearchUri = in.readString();
+        this.expansionName = in.readString();
+        this.collectorNumber = in.readString();
     }
 
-    public static final Parcelable.Creator<Card> CREATOR = new Parcelable.Creator<>() {
+    public static final Creator<Card> CREATOR = new Creator<>() {
         @Override
         public Card createFromParcel(Parcel source) {
             return new Card(source);

@@ -30,7 +30,7 @@ public class CardCollectionAdapter extends RecyclerView.Adapter<CardCollectionAd
         holder.textViewCardId.setText(currentCardCollection.getCard_id());
         holder.textViewQuantity.setText(String.valueOf(currentCardCollection.getQuantity()));
         holder.textViewCondition.setText(currentCardCollection.getCondition());
-        holder.textViewIsFoil.setText(String.valueOf(currentCardCollection.isIs_foil()));
+        holder.textViewIsFoil.setText(String.valueOf(currentCardCollection.isFoil()));
         holder.textViewLanguage.setText(currentCardCollection.getLanguage());
         holder.textViewSetCode.setText(currentCardCollection.getSet_code());
     }

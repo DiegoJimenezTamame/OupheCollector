@@ -2,47 +2,37 @@ package local.ouphecollector.viewmodels;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import local.ouphecollector.database.AppDatabase;
+import local.ouphecollector.database.dao.CardCollectionDao;
 import local.ouphecollector.models.CardCollection;
-import local.ouphecollector.repositories.CardCollectionRepository;
 
 public class CardCollectionViewModel extends AndroidViewModel {
-    private CardCollectionRepository cardCollectionRepository;
+    private CardCollectionDao cardCollectionDao;
 
-    public CardCollectionViewModel(Application application) {
+    public CardCollectionViewModel(@NonNull Application application) {
         super(application);
-        cardCollectionRepository = new CardCollectionRepository(application);
+        cardCollectionDao = AppDatabase.getDatabase(application).cardCollectionDao();
     }
 
-    public LiveData<List<CardCollection>> getCardCollectionsByCollectionId(int collectionId) {
-        return cardCollectionRepository.getCardCollectionsByCollectionId(collectionId);
-    }
-
-    public LiveData<List<CardCollection>> getAllCardCollections() {
-        return cardCollectionRepository.getAllCardCollections();
-    }
-
-    public CardCollection getCardCollectionById(int cardCollectionId) {
-        return cardCollectionRepository.getCardCollectionById(cardCollectionId);
-    }
-
-    public List<CardCollection> getCardCollectionsByCardId(String cardId) {
-        return cardCollectionRepository.getCardCollectionsByCardId(cardId);
+    public LiveData<List<CardCollection>> getCardCollectionsByCollectionId(String collectionId) {
+        return cardCollectionDao.getCardCollectionsByCollectionId(collectionId);
     }
 
     public void insert(CardCollection cardCollection) {
-        cardCollectionRepository.insert(cardCollection);
+        AppDatabase.databaseWriteExecutor.execute(() -> cardCollectionDao.insert(cardCollection));
     }
 
     public void update(CardCollection cardCollection) {
-        cardCollectionRepository.update(cardCollection);
+        AppDatabase.databaseWriteExecutor.execute(() -> cardCollectionDao.update(cardCollection));
     }
 
     public void delete(CardCollection cardCollection) {
-        cardCollectionRepository.delete(cardCollection);
+        AppDatabase.databaseWriteExecutor.execute(() -> cardCollectionDao.delete(cardCollection));
     }
 }

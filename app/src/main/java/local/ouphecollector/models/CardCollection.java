@@ -3,19 +3,22 @@ package local.ouphecollector.models;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "card_collection_table",
         foreignKeys = @ForeignKey(entity = Collection.class,
                 parentColumns = "id",
                 childColumns = "collection_id",
-                onDelete = ForeignKey.CASCADE))
+                onDelete = ForeignKey.CASCADE),
+        indices = {@Index("collection_id")})
 public class CardCollection {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
     @ColumnInfo(name = "collection_id")
-    private int collection_id;
+    private String collection_id;
 
     @ColumnInfo(name = "card_id")
     private String card_id;
@@ -24,23 +27,28 @@ public class CardCollection {
     private String condition;
 
     @ColumnInfo(name = "is_foil")
-    private boolean is_foil;
+    private boolean isFoil;
 
     private String language;
 
     @ColumnInfo(name = "set_code")
     private String set_code;
 
-    public CardCollection(int collection_id, String card_id, int quantity, String condition, boolean is_foil, String language, String set_code) {
+    public CardCollection(String collection_id, String card_id, int quantity, String condition, boolean isFoil, String language, String set_code) {
         this.collection_id = collection_id;
         this.card_id = card_id;
         this.quantity = quantity;
         this.condition = condition;
-        this.is_foil = is_foil;
+        this.isFoil = isFoil;
         this.language = language;
         this.set_code = set_code;
     }
 
+    @Ignore
+    public CardCollection() {
+    }
+
+    // ... (rest of your getters and setters)
     public int getId() {
         return id;
     }
@@ -49,11 +57,11 @@ public class CardCollection {
         this.id = id;
     }
 
-    public int getCollection_id() {
+    public String getCollection_id() {
         return collection_id;
     }
 
-    public void setCollection_id(int collection_id) {
+    public void setCollection_id(String collection_id) {
         this.collection_id = collection_id;
     }
 
@@ -81,12 +89,12 @@ public class CardCollection {
         this.condition = condition;
     }
 
-    public boolean isIs_foil() {
-        return is_foil;
+    public boolean isFoil() {
+        return isFoil;
     }
 
-    public void setIs_foil(boolean is_foil) {
-        this.is_foil = is_foil;
+    public void setFoil(boolean foil) {
+        isFoil = foil;
     }
 
     public String getLanguage() {

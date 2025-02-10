@@ -23,7 +23,7 @@ public interface CardCollectionDao {
     void delete(CardCollection cardCollection);
 
     @Query("SELECT * FROM card_collection_table WHERE collection_id = :collectionId")
-    LiveData<List<CardCollection>> getCardCollectionsByCollectionId(int collectionId);
+    LiveData<List<CardCollection>> getCardCollectionsByCollectionId(String collectionId);
 
     @Query("SELECT * FROM card_collection_table")
     LiveData<List<CardCollection>> getAllCardCollections();

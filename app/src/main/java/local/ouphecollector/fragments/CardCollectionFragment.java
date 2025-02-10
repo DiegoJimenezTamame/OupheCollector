@@ -32,7 +32,7 @@ public class CardCollectionFragment extends Fragment {
     private static final String TAG = "CardCollectionFragment";
     private CardCollectionAdapter cardCollectionAdapter;
     private CardCollectionViewModel cardCollectionViewModel;
-    private int collectionId;
+    private String collectionId;
     private FloatingActionButton fabAddCardCollection;
 
     @SuppressLint("MissingInflatedId")
@@ -57,9 +57,11 @@ public class CardCollectionFragment extends Fragment {
         cardCollectionViewModel = new ViewModelProvider(this).get(CardCollectionViewModel.class);
         // Get the collectionId from the arguments
         if (getArguments() != null) {
-            collectionId = getArguments().getInt("collectionId");
+            collectionId = getArguments().getString("collectionId");
         }
-        cardCollectionViewModel.getCardCollectionsByCollectionId(collectionId).observe(getViewLifecycleOwner(), cardCollections -> cardCollectionAdapter.setCardCollections(cardCollections));
+        // Use the String collectionId here
+        cardCollectionViewModel.getCardCollectionsByCollectionId(collectionId)
+                .observe(getViewLifecycleOwner(), cardCollections -> cardCollectionAdapter.setCardCollections(cardCollections));
     }
 
     private void showAddCardCollectionDialog() {
@@ -82,7 +84,14 @@ public class CardCollectionFragment extends Fragment {
                     EditText setCodeEditText = dialogView.findViewById(R.id.set_code_edit_text);
 
                     String cardId = cardIdEditText.getText().toString();
-                    int quantity = Integer.parseInt(quantityEditText.getText().toString());
+                    // Handle potential NumberFormatException
+                    int quantity;
+                    try {
+                        quantity = Integer.parseInt(quantityEditText.getText().toString());
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getContext(), "Invalid quantity", Toast.LENGTH_SHORT).show();
+                        return; // Exit the method if quantity is invalid
+                    }
                     String condition = conditionSpinner.getSelectedItem().toString();
                     boolean isFoil = isFoilCheckBox.isChecked();
                     String language = languageEditText.getText().toString();

@@ -65,7 +65,6 @@ public class CollectionFragment extends Fragment implements CollectionAdapter.On
     private void showAddCollectionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        // Corrected line: Use dialog_add_collection.xml here
         View dialogView = inflater.inflate(R.layout.dialog_edit_collection, null);
 
         builder.setView(dialogView)
@@ -92,6 +91,7 @@ public class CollectionFragment extends Fragment implements CollectionAdapter.On
 
     private void addNewCollection(String name, String tag) {
         Collection newCollection = new Collection(name, tag);
+        // Removed: newCollection.setId(id); // Room will auto-generate the ID
         collectionViewModel.insert(newCollection);
     }
 
@@ -99,7 +99,8 @@ public class CollectionFragment extends Fragment implements CollectionAdapter.On
     public void onItemClick(Collection collection) {
         Log.d(TAG, "onItemClick: " + collection.getName());
         Bundle bundle = new Bundle();
-        bundle.putInt("collectionId", collection.getId());
+        // Changed: putInt() instead of putString()
+        bundle.putString("collectionId", collection.getId());
         navController.navigate(R.id.action_collectionFragment_to_cardCollectionFragment, bundle);
     }
 
