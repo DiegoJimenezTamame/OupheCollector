@@ -74,7 +74,6 @@
 <p float="left"> 
   <img src="screenshots/main_menu.jpeg" width="200"/> 
   <img src="screenshots/card_scanner.jpeg" width="200"/>
-  <img src="screenshots/search_menu.jpeg" width="200"/> 
   <img src="screenshots/card_info.jpeg" width="200"/> 
   <img src="screenshots/card_versions.jpeg" width="200"/> 
 </p>
