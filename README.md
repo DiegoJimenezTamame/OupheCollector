@@ -111,7 +111,7 @@ Please create an issue for any major changes to discuss the plan.
 - [ ] Improve OCR accuracy for scanning cards
 - [ ] Add user authentication (Firebase or local multi-profile support)
 - [ ] Enable deck export/import (.txt, .csv)
-- [ ] Add price tracking from Scryfall or TCGPlayer
+- [ ] Add price tracking from Scryfall, CardMarket and TCGPlayer
 - [ ] Add dark mode and theming options
 
 ---
@@ -125,7 +125,7 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 ## 👤 Author
 
 **Diego Jimenez Tamame**  
-🔗 [Portfolio](https://diegojimeneztamame.com)  
+
 📂 [GitHub](https://github.com/DiegoJimenezTamame)
 
 ---
