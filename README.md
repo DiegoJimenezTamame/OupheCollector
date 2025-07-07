@@ -1,4 +1,5 @@
-# 🧙‍♂️ OupheCollector
+# ![OupheCollector Icon](screenshots/ouphe_icon.png)
+ OupheCollector
 
 **OupheCollector** is an Android app designed for Magic: The Gathering (MTG) players to manage their card collections, build decks, and create wishlists. With integrated **card scanning** and **Scryfall API** support, the app helps players digitize, organize, and explore their MTG libraries from their mobile device.
 
