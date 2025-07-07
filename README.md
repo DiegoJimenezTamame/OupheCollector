@@ -68,19 +68,19 @@
 ## 🖼 Screenshots
 
 ### Main Menu
-![Card Scanner](screenshots/main_menu.jpg)
+![main_menu](screenshots/main_menu.jpg)
 
 ### Card Scanner
-![Card Scanner](screenshots/card_scanner.jpg)
+![card_scanner](screenshots/card_scanner.jpg)
 
 ### Search Menu
-![Card Scanner](screenshots/search_menu.jpg)
+![search_menu](screenshots/search_menu.jpg)
 
 ### Card Info
-![Card Scanner](screenshots/card_info.jpg)
+![card_info](screenshots/card_info.jpg)
 
 ### Card Version
-![Card Scanner](screenshots/card_versions.jpg)
+![card_versions](screenshots/card_versions.jpg)
 
 ---
 
