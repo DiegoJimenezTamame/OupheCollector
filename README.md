@@ -1,5 +1,5 @@
 # <p float="left"> 
-  <img src="screenshots/ouphe_logo.png" width="200"/> 
+  <img src="screenshots/ouphe_logo.png" width="50"/> 
 </p>
  OupheCollector
 
