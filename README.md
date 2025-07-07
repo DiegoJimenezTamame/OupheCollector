@@ -67,7 +67,20 @@
 
 ## 🖼 Screenshots
 
-_Coming soon!_ Add screenshots of card search, scanner view, collection list, and deck builder interface.
+### Main Menu
+![Card Scanner](screenshots/main_menu.jpg)
+
+### Card Scanner
+![Card Scanner](screenshots/card_scanner.jpg)
+
+### Search Menu
+![Card Scanner](screenshots/search_menu.jpg)
+
+### Card Info
+![Card Scanner](screenshots/card_info.jpg)
+
+### Card Version
+![Card Scanner](screenshots/card_versions.jpg)
 
 ---
 
