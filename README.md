@@ -67,20 +67,14 @@
 
 ## 🖼 Screenshots
 
-### Main Menu
-![main_menu](screenshots/main_menu.jpeg)
-
-### Card Scanner
-![card_scanner](screenshots/card_scanner.jpeg)
-
-### Search Menu
-![search_menu](screenshots/search_menu.jpeg)
-
-### Card Info
-![card_info](screenshots/card_info.jpeg)
-
-### Card Version
-![card_versions](screenshots/card_versions.jpeg)
+📸 Screenshots
+<p float="left"> 
+  <img src="screenshots/main_menu.jpeg" width="200"/> 
+  <img src="screenshots/card_scanner.jpeg" width="200"/>
+  <img src="screenshots/search_menu.jpeg" width="200"/> 
+  <img src="screenshots/card_info.jpeg" width="200"/> 
+  <img src="screenshots/card_versions.jpeg" width="200"/> 
+</p>
 
 ---
 
